@@ -1,30 +1,18 @@
-//
-//  ChatGPTAPI.swift
-//  XCAChatGPT
-//
-//  Created by Alfian Losari on 01/02/23.
-//
-
 import Foundation
 
-class ChatGPTAPI: LLMClient, @unchecked Sendable {
-    
-    var provider: LLMProvider { .chatGPT }
-    
-    private let systemMessage: Message
-    private let temperature: Double
-    private let model: String
-    
+
+class ChatUAPI {
     private let apiKey: String
-    private var historyList = [Message]()
     private let urlSession = URLSession.shared
     private var urlRequest: URLRequest {
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        headers.forEach {  urlRequest.setValue($1, forHTTPHeaderField: $0) }
+        headers.forEach { urlRequest.setValue($1, forHTTPHeaderField: $0) }
         return urlRequest
     }
+    
+    private let basePrompt = "You are a helpful assistant"
     
     let dateFormatter: DateFormatter = {
         let df = DateFormatter()
@@ -45,119 +33,78 @@ class ChatGPTAPI: LLMClient, @unchecked Sendable {
         ]
     }
     
-
-    init(apiKey: String, model: String = "gpt-3.5-turbo", systemPrompt: String = "You are a helpful assistant", temperature: Double = 0.5) {
-        self.apiKey = apiKey
-        self.model = model
-        self.systemMessage = .init(role: "system", content: systemPrompt)
-        self.temperature = temperature
+    init(apiKey: String) {
+        self.apiKey = "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"
     }
     
-    private func generateMessages(from text: String) -> [Message] {
-        var messages = [systemMessage] + historyList + [Message(role: "user", content: text)]
-        
-        if messages.contentCount > (4000 * 4) {
-            _ = historyList.removeFirst()
-            messages = generateMessages(from: text)
-        }
-        return messages
+    private func generateChatGPTPrompt(from text: String) -> String {
+        return basePrompt + "User: \(text)\n\nChatGPT:"
     }
     
     private func jsonBody(text: String, stream: Bool = true) throws -> Data {
-        let request = Request(model: model, temperature: temperature,
-                              messages: generateMessages(from: text), stream: stream)
-        return try JSONEncoder().encode(request)
+        let jsonBody: [String:Any] = [
+            "model": "gpt-3.5-turbo",
+            "temperature": 0.5,
+            "max_tokens": 1024,
+            "prompt": generateChatGPTPrompt(from: text),
+            "stop": [
+                "\n\n\n",
+                ""
+            ],
+            "stream": stream
+        ]
+        return try JSONSerialization.data(withJSONObject: jsonBody)
     }
     
-    private func appendToHistoryList(userText: String, responseText: String) {
-        self.historyList.append(.init(role: "user", content: userText))
-        self.historyList.append(.init(role: "assistant", content: responseText))
+    
+    enum ChatAPIError: Error {
+        case invalidResponse
+        case badResponse(statusCode: Int)
     }
     
     func sendMessageStream(text: String) async throws -> AsyncThrowingStream<String, Error> {
         var urlRequest = self.urlRequest
         urlRequest.httpBody = try jsonBody(text: text)
         
+        // You might need to replace this line if `bytes(for:)` is not a valid method in your URLSession extension or framework.
         let (result, response) = try await urlSession.bytes(for: urlRequest)
         try Task.checkCancellation()
         
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw "Invalid response"
+            throw ChatAPIError.invalidResponse // Here's one of the errors that gets thrown as a string
         }
         
         guard 200...299 ~= httpResponse.statusCode else {
-            var errorText = ""
-            for try await line in result.lines {
-                try Task.checkCancellation()
-                errorText += line
-            }
-            
-            if let data = errorText.data(using: .utf8), let errorResponse = try? jsonDecoder.decode(ErrorRootResponse.self, from: data).error {
-                errorText = "\n\(errorResponse.message)"
-            }
-            
-            throw "Bad Response: \(httpResponse.statusCode), \(errorText)"
+            throw ChatAPIError.badResponse(statusCode: httpResponse.statusCode) // Here's another one
         }
         
-        var responseText = ""
-        return AsyncThrowingStream { [weak self] in
-            guard let self else { return nil }
-            for try await line in result.lines {
-                try Task.checkCancellation()
-                if line.hasPrefix("data: "),
-                   let data = line.dropFirst(6).data(using: .utf8),
-                   let response = try? self.jsonDecoder.decode(StreamCompletionResponse.self, from: data),
-                   let text = response.choices.first?.delta.content {
-                    responseText += text
-                    return text
+        return AsyncThrowingStream<String, Error> { continuation in
+            Task(priority: .userInitiated) {
+                do {
+                    for try await line in result.lines {
+                        if line.hasPrefix("data: "),
+                           let data = line.dropFirst(6).data(using: .utf8),
+                           let response = try? self.jsonDecoder.decode(CompletionResponse.self, from: data),
+                           let text = response.choices.first?.text {
+                            continuation.yield(text)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
                 }
             }
-            self.appendToHistoryList(userText: text, responseText: responseText)
-            return nil
         }
-    }
-
-    func sendMessage(_ text: String) async throws -> String {
-        var urlRequest = self.urlRequest
-        urlRequest.httpBody = try jsonBody(text: text, stream: false)
-        
-        let (data, response) = try await urlSession.data(for: urlRequest)
-        try Task.checkCancellation()
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw "Invalid response"
-        }
-        
-        guard 200...299 ~= httpResponse.statusCode else {
-            var error = "Bad Response: \(httpResponse.statusCode)"
-            if let errorResponse = try? jsonDecoder.decode(ErrorRootResponse.self, from: data).error {
-                error.append("\n\(errorResponse.message)")
-            }
-            throw error
-        }
-        
-        do {
-            let completionResponse = try self.jsonDecoder.decode(CompletionResponse.self, from: data)
-            let responseText = completionResponse.choices.first?.message.content ?? ""
-            self.appendToHistoryList(userText: text, responseText: responseText)
-            return responseText
-        } catch {
-            throw error
-        }
-    }
-    
-    func deleteHistoryList() {
-        self.historyList.removeAll()
     }
 }
-
-extension String: CustomNSError {
     
-    public var errorUserInfo: [String : Any] {
-        [
-            NSLocalizedDescriptionKey: self
-        ]
-    }
+
+extension String: Error {}
+
+struct CompletionResponse: Decodable {
+    let choices: [Choice]
 }
-
-
+struct Choice: Decodable {
+    let text: String
+}
 

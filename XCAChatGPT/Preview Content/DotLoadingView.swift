@@ -2,7 +2,7 @@
 //  DotLoadingView.swift
 //  XCAChatGPT
 //
-//  Created by Alfian Losari on 02/02/23.
+//  Created by P on 2023-10-13.
 //
 
 import SwiftUI
@@ -58,4 +58,3 @@ struct DotLoadingView_Previews: PreviewProvider {
         DotLoadingView()
     }
 }
-
