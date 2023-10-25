@@ -8,8 +8,13 @@
 import Foundation
 import SwiftUI
 
+import SwiftUI
+
 @main
 struct ChatApp: App {
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

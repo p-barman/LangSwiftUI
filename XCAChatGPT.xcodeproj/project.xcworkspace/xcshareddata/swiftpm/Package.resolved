@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "adaptysdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/adaptyteam/AdaptySDK-iOS.git",
+      "state" : {
+        "revision" : "a5a7b6f62548af117f7cd9bc00abc3a5ab66365b",
+        "version" : "2.8.0"
+      }
+    },
+    {
       "identity" : "generative-ai-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/generative-ai-swift",

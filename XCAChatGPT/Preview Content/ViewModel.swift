@@ -16,7 +16,7 @@ class ViewModel: ObservableObject {
     @Published var isInteractingwithModel = false
     @Published var messages: [MessageRow] = []
     @Published var inputMessage: String = ""
-    @Published var webSocketVM = WebSocketViewModel(url: "wss://b752-136-62-199-186.ngrok-free.app")
+    @Published var webSocketVM = WebSocketViewModel(url: "wss://91be-136-62-199-186.ngrok-free.app")
 //    @State messageRow: MessageRow()
     
     private let api: ChatUAPI
@@ -48,46 +48,41 @@ class ViewModel: ObservableObject {
     @MainActor
     private func send(text: String) async {
         isInteractingwithModel = true
-        var streamText = ""
+        
+        // Initialize the message row for the outgoing message
         var messageRow = MessageRow(
             isInteractingwithModel: true,
             sendImage: "profile",
             sendText: text,
             responseImage: "openai",
-            responseText: streamText,
+            responseText: "",
             responseError: nil
         )
         
+        // Append the initialized message to the messages array
         self.messages.append(messageRow)
         
-        do {
-            //            let stream = try await api.sendMessageStream(text: text)
-              webSocketVM.onMessageReceived = { [weak self] message in
-                    messageRow.responseText = message
-                    self?.messages[self?.messages.count ?? 0 - 1] = messageRow
-                }
-                
-                // Send the message
-                webSocketVM.send(message: text)
-                
-            //            for try await text in stream {
-            //                streamText += text
-            //                messageRow.responseText = streamText.trimmingCharacters(in: .whitespacesAndNewlines)
-            //                self.messages[self.messages.count - 1] = messageRow
-            //
-            //                // Sending the responseText to the WebSocket after processing with your API:
-            //                webSocketVM.send(message: messageRow.responseText)
-            //            }
-        }
-//        } catch {
-//            messageRow.responseError = error.localizedDescription
-//        }
+        // Capture the current message index for later use
+        let currentIndex = messages.count - 1
         
-        // after sending a message, turn off interaction
-        messageRow.isInteractingwithModel = false
-        self.messages[self.messages.count - 1] = messageRow
+        // Define the response handling mechanism
+        webSocketVM.onMessageReceived = { [weak self] message in
+            if let strongSelf = self, currentIndex < strongSelf.messages.count {
+                // Update the corresponding message with the received response
+                strongSelf.messages[currentIndex].responseText = message
+                
+                // Turn off the interaction after receiving the message
+                strongSelf.messages[currentIndex].isInteractingwithModel = false
+            }
+        }
+        
+        // Send the outgoing message to the WebSocket server
+        webSocketVM.send(message: text)
+        
+        // Once the message has been sent, update the message row to reflect the interaction state
         isInteractingwithModel = false
     }
+
 
 //    func speakLastResponse() {
 //        #if !os(watchOS)

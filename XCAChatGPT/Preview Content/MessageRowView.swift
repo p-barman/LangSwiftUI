@@ -22,7 +22,7 @@ struct MessageRowView: View {
             
             if let text = message.responseText {
                 Divider()
-                messageRow(text: text, image: message.responseImage, bgColor: colorScheme == .light ? .gray.opacity(0.1) : Color(red: 52/255, green: 53/255, blue: 65/255, opacity: 1), responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
+                messageRow(text: text, image: message.responseImage, bgColor: colorScheme == .light ? .gray.opacity(0.5) : Color(red: 52/255, green: 53/255, blue: 65/255, opacity: 1), responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
                 Divider()
             }
         } // V Stack closed
@@ -35,6 +35,7 @@ struct MessageRowView: View {
                     image
                         .resizable()
                         .frame(width: 25, height: 25)
+                        .cornerRadius(5)
                 } placeholder: {
                     ProgressView()
                 }
@@ -42,12 +43,16 @@ struct MessageRowView: View {
                 Image(image)
                     .resizable()
                     .frame(width: 25, height: 25)
+                    .cornerRadius(5)
             }
             VStack(alignment: .leading) {
                 if !text.isEmpty {
                     Text(text)
                         .multilineTextAlignment(.leading)
                         .textSelection(.enabled)
+//                        .background(bgColor)
+                        
+                    
                 }
                 
                 if let error = responseError {
@@ -70,7 +75,7 @@ struct MessageRowView: View {
             // H Stack closed
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .backgroundStyle(bgColor)
+            .background(bgColor)
         }
     }
     

@@ -7,12 +7,20 @@
 
 
 import SwiftUI
+import StoreKit
 
 struct ContentView: View {
     
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.requestReview) var requestReview
     @StateObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY"))
-    @StateObject var websocketVM = WebSocketViewModel(url: "wss://b752-136-62-199-186.ngrok-free.app")
+    @StateObject var websocketVM = WebSocketViewModel(url: "wss://6ffb-136-62-199-186.ngrok-free.app")
+
+    @State private var showSettingsView: Bool = false
+
+    
+
+    
 
     @FocusState var isTextFieldFocused: Bool
     
@@ -24,11 +32,26 @@ struct ContentView: View {
        ]
     
     var body: some View {
-        chatListView
-            .navigationTitle("Langwallet")
-    }
+            NavigationView {
+                chatListView
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        TypingText(title: "LANGWALLET")
+                    }
+                }
+                .navigationBarItems(trailing: SettingsViewButton(showSettings: $showSettingsView)) // Bind the button's action to the state variable
+                                .fullScreenCover(isPresented: $showSettingsView) {
+                                    NavigationView {// Use the fullScreenCover modifier
+                                        SettingsView(showSettings: $showSettingsView)
+                                    }
+                                }
+            }
+        }
     
     var chatListView: some View {
+        
+        
         ScrollViewReader { proxy in
             VStack(spacing: 0) {
                 ScrollView {
@@ -53,7 +76,18 @@ struct ContentView: View {
             }
         }
         .background(colorScheme == .light ? .white : Color(red: 52/255, green: 53/255, blue: 65/255, opacity: 0.5))
+//        .navigationBarItems(trailing: HStack {
+//                    SettingsViewButton(showSettings: $showSettingsView)
+//                })
+//                .navigationDestination(isPresented: $showSettingsView) {
+//                    SettingsView()
+//                }
+        
+
     }
+    
+    
+     
     // user input declared
     func bottomView(image: String, proxy: ScrollViewProxy) -> some View {
         VStack(spacing: 0 ) {
@@ -88,6 +122,8 @@ struct ContentView: View {
                     Image(image)
                         .resizable()
                         .frame(width: 30, height: 30)
+                        .cornerRadius(5)
+                        
                 }
                 TextField("Send Message", text: $vm.inputMessage, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
@@ -197,6 +233,33 @@ struct ContentView: View {
 //
 //        }
 //    }
+
+// for settings view or chatlist View navigationLink
+
+enum ActiveView: Hashable {
+    case none
+    case settings
+}
+
+// For the nav title to be typed out animation
+
+struct TypingText: View {
+    let title: String
+    @State private var displayedCharactersCount: Int = 0
+    
+    var body: some View {
+        Text(String(title.prefix(displayedCharactersCount)))
+            .onAppear {
+                Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+                    if displayedCharactersCount < title.count {
+                        displayedCharactersCount += 1
+                    } else {
+                        timer.invalidate()
+                    }
+                }
+            }
+    }
+}
 
 
 struct ContentView_previews: PreviewProvider {
