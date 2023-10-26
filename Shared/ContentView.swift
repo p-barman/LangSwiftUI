@@ -14,17 +14,14 @@ struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.requestReview) var requestReview
     @StateObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY"))
-    @StateObject var websocketVM = WebSocketViewModel(url: "wss://6ffb-136-62-199-186.ngrok-free.app")
+//    @StateObject var websocketVM = WebSocketViewModel.websocketVMweb
 
     @State private var showSettingsView: Bool = false
-
-    
-
-    
 
     @FocusState var isTextFieldFocused: Bool
     
     let suggestions = [
+           "price of eth",
            "fund my wallet with 30 USDC",
            "what's my balance",
            "send langwallet.eth 10 USDC",
@@ -37,7 +34,7 @@ struct ContentView: View {
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        TypingText(title: "LANGWALLET")
+                        TypingText(title: "langwallet")
                     }
                 }
                 .navigationBarItems(trailing: SettingsViewButton(showSettings: $showSettingsView)) // Bind the button's action to the state variable
@@ -50,7 +47,6 @@ struct ContentView: View {
         }
     
     var chatListView: some View {
-        
         
         ScrollViewReader { proxy in
             VStack(spacing: 0) {
@@ -128,10 +124,10 @@ struct ContentView: View {
                 TextField("Send Message", text: $vm.inputMessage, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
                     .focused($isTextFieldFocused)
-                    .disabled(vm.isInteractingwithModel)
+                    .disabled(vm.isInteractingWithModel)
                 
-                if vm.isInteractingwithModel {
-                    DotLoadingView().frame(width: 60, height:30)
+                if vm.isInteractingWithModel {
+                    DotLoadingView().frame(width: 60, height:20)
                 } else {
                     Button {
                         Task { @MainActor in

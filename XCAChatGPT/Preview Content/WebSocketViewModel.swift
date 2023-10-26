@@ -23,6 +23,7 @@ class WebSocketViewModel: ObservableObject {
 
         // Start connection immediately upon initialization
         self.connect()
+        print("connected?")
 
         // Register for app lifecycle notifications
         NotificationCenter.default.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)

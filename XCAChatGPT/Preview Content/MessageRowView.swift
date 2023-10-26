@@ -7,92 +7,106 @@
 
 import SwiftUI
 
-
-
 struct MessageRowView: View {
     
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
-    
-    let message: MessageRow
+    @ObservedObject var message: MessageRow
     let retryCallback: (MessageRow) -> Void
-    
+
     var body: some View {
-        VStack(spacing: 0) {
-            messageRow(text: message.sendText, image: message.sendImage, bgColor: colorScheme == .light ? .white : Color(red:52/255, green: 53/255, blue: 65/255, opacity: 0.5))
-            
-            if let text = message.responseText {
-                Divider()
-                messageRow(text: text, image: message.responseImage, bgColor: colorScheme == .light ? .gray.opacity(0.5) : Color(red: 52/255, green: 53/255, blue: 65/255, opacity: 1), responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
-                Divider()
-            }
-        } // V Stack closed
-    }
-    
-    func messageRow(text: String, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
-        HStack(alignment: .top, spacing: 24) {
-            if image.hasPrefix("http"), let url = URL(string: image) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .cornerRadius(5)
-                } placeholder: {
-                    ProgressView()
-                }
+        VStack(spacing: 10) {
+            if message.isFromUser {
+                UserMessageRow(text: message.sendText, image: message.sendImage)
+                    .frame(maxWidth: .infinity, alignment: .leading) // User on the LEFT
             } else {
-                Image(image)
-                    .resizable()
-                    .frame(width: 25, height: 25)
-                    .cornerRadius(5)
+                LangWalletMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
+                    .frame(maxWidth: .infinity, alignment: .trailing) // Server on the RIGHT
             }
-            VStack(alignment: .leading) {
-                if !text.isEmpty {
-                    Text(text)
-                        .multilineTextAlignment(.leading)
-                        .textSelection(.enabled)
-//                        .background(bgColor)
-                        
-                    
-                }
-                
+        }
+        .padding(.horizontal)
+    }
+    func UserMessageRow(text: String, image: String) -> some View {
+        MessageRow(text: text, image: image, bgColor: colorScheme == .light ? Color.blue : Color.gray.opacity(0.5))
+    }
+
+    func LangWalletMessageRow(text: String, image: String, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
+        MessageRow(text: text, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: showDotLoading)
+    }
+
+    func MessageRow(text: String, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
+        HStack(spacing: 12) {
+            MessageImage(image: image)
+                .frame(width: 40, height: 40)
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(text)
+                    .font(.system(size: 16))
+                    .foregroundColor(bgColor == Color.blue ? .white : .primary)
+                    .padding(10)
+                    .background(bgColor)
+                    .cornerRadius(16)
+
                 if let error = responseError {
-                    Text("Error: \(error)")
+                    Text(error)
+                        .font(.system(size: 14))
                         .foregroundColor(.red)
-                        .multilineTextAlignment(.leading)
-                    
-                    Button("Regenerate response") {
-                        retryCallback(message)
-                    }
-                    .foregroundColor(.accentColor)
-                    .padding(.top)
+                        .padding(.horizontal, 10)
                 }
-                
+
                 if showDotLoading {
                     DotLoadingView()
-                        .frame(width: 60, height: 30)
                 }
             }
-            // H Stack closed
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(bgColor)
         }
     }
-    
-    // Moved the preview outside of the main struct.
-    struct MessageRowView_Previews: PreviewProvider {
-        static let message = MessageRow(isInteractingwithModel: false, sendImage: "profile", sendText: "How old am i?", responseImage: "openai", responseText: "30!!!!")
-        
-        static let message2 = MessageRow(isInteractingwithModel: true, sendImage: "profile", sendText: "How old am i?", responseImage: "openai", responseText: "30!!!!")
-        
-        static var previews: some View {
-            NavigationView {
-                ScrollView {
-                    MessageRowView(message: message, retryCallback: { _ in })
-                        .frame(width: 400)
-                        .previewLayout(.sizeThatFits)
-                }
+
+    func DotLoadingView() -> some View {
+        HStack(spacing: 3) {
+            ForEach(0..<3) { _ in
+                Circle().frame(width: 6, height: 6).foregroundColor(.gray)
             }
         }
     }
 }
+
+struct MessageImage: View {
+    var image: String
+
+    var body: some View {
+        Group {
+            if image.hasPrefix("http"), let url = URL(string: image) {
+                AsyncImage(url: url, content: { image in
+                    image.resizable()
+                }, placeholder: {
+                    ProgressView()
+                })
+            } else {
+                Image(image).resizable()
+            }
+        }
+        .frame(width: 25, height: 25)
+        .cornerRadius(12.5)
+    }
+}
+
+
+
+    
+//    // Moved the preview outside of the main struct.
+//    struct MessageRowView_Previews: PreviewProvider {
+//        static let message = MessageRow(isInteractingwithModel: false, sendImage: "profile", sendText: "How old am i?", responseImage: "openai", responseText: "30!!!!")
+//
+//        static let message2 = MessageRow(isInteractingwithModel: true, sendImage: "profile", sendText: "How old am i?", responseImage: "openai", responseText: "30!!!!")
+//
+//        static var previews: some View {
+//            NavigationView {
+//                ScrollView {
+//                    MessageRowView(message: message, retryCallback: { _ in })
+//                        .frame(width: 400)
+//                        .previewLayout(.sizeThatFits)
+//                }
+//            }
+//        }
+//    }
+//}

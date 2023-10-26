@@ -4,19 +4,20 @@
 //
 //  Created by P on 2023-10-13.
 //
-
 import Foundation
 import SwiftUI
 import AVKit
 
-
-
 class ViewModel: ObservableObject {
     
-    @Published var isInteractingwithModel = false
-    @Published var messages: [MessageRow] = []
+    @Published var isInteractingWithModel = false
+    @Published var messages: [MessageRow] = []{
+        didSet {
+            print("Messages updated:", messages)
+        }
+    }
     @Published var inputMessage: String = ""
-    @Published var webSocketVM = WebSocketViewModel(url: "wss://91be-136-62-199-186.ngrok-free.app")
+    @Published var webSocketVM = WebSocketViewModel(url: "ws://127.0.0.1:8000/ws/expl_user_identifier")
 //    @State messageRow: MessageRow()
     
     private let api: ChatUAPI
@@ -44,17 +45,36 @@ class ViewModel: ObservableObject {
         self.messages.remove(at:index)
         await send(text:message.sendText)
     }
+
     
     @MainActor
     private func send(text: String) async {
-        isInteractingwithModel = true
+        isInteractingWithModel = true
+    
+        // Construct the message object
+        let webSocketMessage = WebSocketMessage(
+            text: text,
+            user_secret: "secret",
+            user_identifier: "expl_user_identifier",
+            msg_id: "1241"
+        )
         
+        // Convert the message object to JSON and send
+        do {
+            let jsonData = try JSONEncoder().encode(webSocketMessage)
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                webSocketVM.send(message: jsonString)
+            }
+        } catch {
+            print("Failed to encode WebSocketMessage:", error)
+        }
         // Initialize the message row for the outgoing message
         var messageRow = MessageRow(
+            isFromUser: true,
             isInteractingwithModel: true,
             sendImage: "profile",
             sendText: text,
-            responseImage: "openai",
+            responseImage: "langicon",
             responseText: "",
             responseError: nil
         )
@@ -67,20 +87,36 @@ class ViewModel: ObservableObject {
         
         // Define the response handling mechanism
         webSocketVM.onMessageReceived = { [weak self] message in
-            if let strongSelf = self, currentIndex < strongSelf.messages.count {
-                // Update the corresponding message with the received response
-                strongSelf.messages[currentIndex].responseText = message
-                
-                // Turn off the interaction after receiving the message
-                strongSelf.messages[currentIndex].isInteractingwithModel = false
+                    DispatchQueue.main.async {
+                        self?.isInteractingWithModel = false
+                        if let strongSelf = self, currentIndex < strongSelf.messages.count {
+                            // Update the corresponding message with the received response
+                            if let data = message.data(using: .utf8),
+                                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                                let text = json["text"] as? String {
+                                
+                                // Now, text contains the token or message from the server
+                                strongSelf.messages[currentIndex].updateResponseText(text: text)
+                                strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+
+                                if let isEndOfStream = json["end_of_stream"] as? Bool, isEndOfStream {
+                                    // Update the specific message's property:
+                                    strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        
-        // Send the outgoing message to the WebSocket server
-        webSocketVM.send(message: text)
-        
-        // Once the message has been sent, update the message row to reflect the interaction state
-        isInteractingwithModel = false
+    
+    
+    struct WebSocketMessage: Codable {
+        var text: String
+        var user_secret: String
+        var user_identifier: String
+        var msg_id: String
+        // other properties if needed...
     }
 
 
@@ -104,4 +140,4 @@ class ViewModel: ObservableObject {
 //        synthesizer?.stopSpeaking(at: .immediate)
 //        #endif
 //    }
-}
+//}
