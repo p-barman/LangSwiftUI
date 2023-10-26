@@ -18,14 +18,14 @@ class ViewModel: ObservableObject {
     }
     @Published var inputMessage: String = ""
     @Published var webSocketVM = WebSocketViewModel(url: "ws://127.0.0.1:8000/ws/expl_user_identifier")
-//    @State messageRow: MessageRow()
+    //    @State messageRow: MessageRow()
     
     private let api: ChatUAPI
     
     init(api: ChatUAPI) {
         self.api = api
         self.webSocketVM.connect()
-
+        
     }
     
     @MainActor
@@ -45,12 +45,12 @@ class ViewModel: ObservableObject {
         self.messages.remove(at:index)
         await send(text:message.sendText)
     }
-
+    
     
     @MainActor
     private func send(text: String) async {
         isInteractingWithModel = true
-    
+        
         // Construct the message object
         let webSocketMessage = WebSocketMessage(
             text: text,
@@ -68,48 +68,55 @@ class ViewModel: ObservableObject {
         } catch {
             print("Failed to encode WebSocketMessage:", error)
         }
-        // Initialize the message row for the outgoing message
-        var messageRow = MessageRow(
+        
+        // Initialize the message row for the outgoing (user) message
+        let userMessageRow = MessageRow(
             isFromUser: true,
-            isInteractingwithModel: true,
+            isInteractingwithModel: false,
             sendImage: "profile",
             sendText: text,
-            responseImage: "langicon",
-            responseText: "",
-            responseError: nil
+            responseImage: "",
+            responseText: ""
         )
+        self.messages.append(userMessageRow)
         
-        // Append the initialized message to the messages array
-        self.messages.append(messageRow)
+        // Initialize the message row for the LangWallet response
+        var langWalletMessageRow = MessageRow(
+            isFromUser: false,
+            isInteractingwithModel: true,
+            sendImage: "langicon",
+            sendText: "",
+            responseImage: "langicon",
+            responseText: ""
+        )
+        self.messages.append(langWalletMessageRow)
         
-        // Capture the current message index for later use
+        // Capture the current message index for later use (LangWallet's index)
         let currentIndex = messages.count - 1
         
         // Define the response handling mechanism
         webSocketVM.onMessageReceived = { [weak self] message in
-                    DispatchQueue.main.async {
-                        self?.isInteractingWithModel = false
-                        if let strongSelf = self, currentIndex < strongSelf.messages.count {
-                            // Update the corresponding message with the received response
-                            if let data = message.data(using: .utf8),
-                                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                                let text = json["text"] as? String {
-                                
-                                // Now, text contains the token or message from the server
-                                strongSelf.messages[currentIndex].updateResponseText(text: text)
-                                strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
-
-                                if let isEndOfStream = json["end_of_stream"] as? Bool, isEndOfStream {
-                                    // Update the specific message's property:
-                                    strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
-                                }
-                            }
+            DispatchQueue.main.async {
+                self?.isInteractingWithModel = false
+                if let strongSelf = self, currentIndex < strongSelf.messages.count {
+                    // Update the corresponding message with the received response
+                    if let data = message.data(using: .utf8),
+                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let text = json["text"] as? String {
+                        
+                        strongSelf.messages[currentIndex].updateResponseText(text: text)
+                        strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                        
+                        if let isEndOfStream = json["end_of_stream"] as? Bool, isEndOfStream {
+                            strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
                         }
                     }
                 }
             }
         }
-    
+    }
+}
+
     
     struct WebSocketMessage: Codable {
         var text: String

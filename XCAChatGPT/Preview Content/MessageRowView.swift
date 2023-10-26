@@ -17,10 +17,10 @@ struct MessageRowView: View {
         VStack(spacing: 10) {
             if message.isFromUser {
                 UserMessageRow(text: message.sendText, image: message.sendImage)
-                    .frame(maxWidth: .infinity, alignment: .leading) // User on the LEFT
+                    .frame(maxWidth: .infinity, alignment: .trailing) // User on the LEFT
             } else {
                 LangWalletMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
-                    .frame(maxWidth: .infinity, alignment: .trailing) // Server on the RIGHT
+                    .frame(maxWidth: .infinity, alignment: .leading) // Server on the RIGHT
             }
         }
         .padding(.horizontal)
@@ -30,8 +30,9 @@ struct MessageRowView: View {
     }
 
     func LangWalletMessageRow(text: String, image: String, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
-        MessageRow(text: text, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: showDotLoading)
+        MessageRow(text: message.responseText, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: showDotLoading)
     }
+
 
     func MessageRow(text: String, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
         HStack(spacing: 12) {
