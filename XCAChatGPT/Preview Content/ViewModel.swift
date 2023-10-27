@@ -22,6 +22,11 @@ class ViewModel: ObservableObject {
     
     private let api: ChatUAPI
     
+    func clearChat() {
+            messages.removeAll()
+        }
+    
+    
     init(api: ChatUAPI) {
         self.api = api
         self.webSocketVM.connect()

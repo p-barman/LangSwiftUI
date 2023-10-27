@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E2831392AEB201200F92FCB /* LottieViewAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */; };
+		6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6E28313B2AEB206F00F92FCB /* Lottie */; };
 		6E9856892AD9DA6A00ABAE9A /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */; };
 		6E98568B2AD9DAC200ABAE9A /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568A2AD9DAC200ABAE9A /* MessageRow.swift */; };
 		6E98568D2AD9DFB200ABAE9A /* DotLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568C2AD9DFB200ABAE9A /* DotLoadingView.swift */; };
@@ -20,7 +22,7 @@
 		6E9856A02AE9CE3300ABAE9A /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98569F2AE9CE3300ABAE9A /* UserState.swift */; };
 		8B057593298E52D900A56C9A /* ChatGPTAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C011298AD0CE0079AF26 /* ChatGPTAPI.swift */; };
 		8B057594298E52D900A56C9A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C005298AD09E0079AF26 /* ContentView.swift */; };
-		8B0575F1298FA9D800A56C9A /* XCAChatGPTWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 8B0575F0298FA9D800A56C9A /* XCAChatGPTWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8B0575F1298FA9D800A56C9A /* LangSwiftUIWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 8B0575F0298FA9D800A56C9A /* LangSwiftUIWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8B057605298FA9E900A56C9A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C005298AD09E0079AF26 /* ContentView.swift */; };
 		8B05760A298FA9E900A56C9A /* ChatGPTAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C011298AD0CE0079AF26 /* ChatGPTAPI.swift */; };
 		8B05761F298FBE0400A56C9A /* ChatGPTAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C011298AD0CE0079AF26 /* ChatGPTAPI.swift */; };
@@ -56,7 +58,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				8B0575F1298FA9D800A56C9A /* XCAChatGPTWatch Watch App.app in Embed Watch Content */,
+				8B0575F1298FA9D800A56C9A /* LangSwiftUIWatch Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +66,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieViewAnimation.swift; sourceTree = "<group>"; };
 		6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		6E98568A2AD9DAC200ABAE9A /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
 		6E98568C2AD9DFB200ABAE9A /* DotLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotLoadingView.swift; sourceTree = "<group>"; };
@@ -74,11 +77,11 @@
 		6E98569B2AE9CA8300ABAE9A /* Adapty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Adapty.swift; sourceTree = "<group>"; };
 		6E98569D2AE9CBCB00ABAE9A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E98569F2AE9CE3300ABAE9A /* UserState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
-		8B057582298E52C000A56C9A /* XCAChatGPTMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XCAChatGPTMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8B0575EB298FA9D800A56C9A /* XCAChatGPTWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XCAChatGPTWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8B0575F0298FA9D800A56C9A /* XCAChatGPTWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XCAChatGPTWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8B057611298FBDB600A56C9A /* XCAChatGPTTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XCAChatGPTTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8B91C000298AD09E0079AF26 /* XCAChatGPT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XCAChatGPT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B057582298E52C000A56C9A /* LangSwiftUIMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LangSwiftUIMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B0575EB298FA9D800A56C9A /* LangSwiftUIWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LangSwiftUIWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B0575F0298FA9D800A56C9A /* LangSwiftUIWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LangSwiftUIWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B057611298FBDB600A56C9A /* LangSwiftUITV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LangSwiftUITV.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B91C000298AD09E0079AF26 /* LangSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LangSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B91C003298AD09E0079AF26 /* XCAChatGPTApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCAChatGPTApp.swift; sourceTree = "<group>"; };
 		8B91C005298AD09E0079AF26 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8B91C007298AD09F0079AF26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -120,6 +123,7 @@
 				8BC0F8D329F157E600D6B492 /* Highlighter in Frameworks */,
 				8BC0F8D029F157C800D6B492 /* Markdown in Frameworks */,
 				8B75A1B12A2CB7C600E8810E /* GoogleGenerativeAI in Frameworks */,
+				6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +135,7 @@
 			children = (
 				8B91C011298AD0CE0079AF26 /* ChatGPTAPI.swift */,
 				8B91C005298AD09E0079AF26 /* ContentView.swift */,
+				6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */,
 				6E98569B2AE9CA8300ABAE9A /* Adapty.swift */,
 				6E9856962AE9A82500ABAE9A /* SettingsView.swift */,
 				6E9856942AE6D66000ABAE9A /* SharedViewModel.swift */,
@@ -158,11 +163,11 @@
 		8B91C001298AD09E0079AF26 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8B91C000298AD09E0079AF26 /* XCAChatGPT.app */,
-				8B057582298E52C000A56C9A /* XCAChatGPTMac.app */,
-				8B0575EB298FA9D800A56C9A /* XCAChatGPTWatch.app */,
-				8B0575F0298FA9D800A56C9A /* XCAChatGPTWatch Watch App.app */,
-				8B057611298FBDB600A56C9A /* XCAChatGPTTV.app */,
+				8B91C000298AD09E0079AF26 /* LangSwiftUI.app */,
+				8B057582298E52C000A56C9A /* LangSwiftUIMac.app */,
+				8B0575EB298FA9D800A56C9A /* LangSwiftUIWatch.app */,
+				8B0575F0298FA9D800A56C9A /* LangSwiftUIWatch Watch App.app */,
+				8B057611298FBDB600A56C9A /* LangSwiftUITV.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -195,9 +200,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8B057581298E52C000A56C9A /* XCAChatGPTMac */ = {
+		8B057581298E52C000A56C9A /* LangSwiftUIMac */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8B057590298E52C000A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTMac" */;
+			buildConfigurationList = 8B057590298E52C000A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUIMac" */;
 			buildPhases = (
 				8B05757E298E52C000A56C9A /* Sources */,
 				8B05757F298E52C000A56C9A /* Frameworks */,
@@ -207,17 +212,17 @@
 			);
 			dependencies = (
 			);
-			name = XCAChatGPTMac;
+			name = LangSwiftUIMac;
 			packageProductDependencies = (
 				8B75A1B32A2CB7D200E8810E /* GoogleGenerativeAI */,
 			);
 			productName = XCAChatGPTMac;
-			productReference = 8B057582298E52C000A56C9A /* XCAChatGPTMac.app */;
+			productReference = 8B057582298E52C000A56C9A /* LangSwiftUIMac.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8B0575EA298FA9D800A56C9A /* XCAChatGPTWatch */ = {
+		8B0575EA298FA9D800A56C9A /* LangSwiftUIWatch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8B057604298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTWatch" */;
+			buildConfigurationList = 8B057604298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUIWatch" */;
 			buildPhases = (
 				8B0575E9298FA9D800A56C9A /* Resources */,
 				8B057600298FA9DA00A56C9A /* Embed Watch Content */,
@@ -227,14 +232,14 @@
 			dependencies = (
 				8B0575F3298FA9D800A56C9A /* PBXTargetDependency */,
 			);
-			name = XCAChatGPTWatch;
+			name = LangSwiftUIWatch;
 			productName = XCAChatGPTWatch;
-			productReference = 8B0575EB298FA9D800A56C9A /* XCAChatGPTWatch.app */;
+			productReference = 8B0575EB298FA9D800A56C9A /* LangSwiftUIWatch.app */;
 			productType = "com.apple.product-type.application.watchapp2-container";
 		};
-		8B0575EF298FA9D800A56C9A /* XCAChatGPTWatch Watch App */ = {
+		8B0575EF298FA9D800A56C9A /* LangSwiftUIWatch Watch App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8B057603298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTWatch Watch App" */;
+			buildConfigurationList = 8B057603298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUIWatch Watch App" */;
 			buildPhases = (
 				8B0575EC298FA9D800A56C9A /* Sources */,
 				8B0575ED298FA9D800A56C9A /* Frameworks */,
@@ -244,17 +249,17 @@
 			);
 			dependencies = (
 			);
-			name = "XCAChatGPTWatch Watch App";
+			name = "LangSwiftUIWatch Watch App";
 			packageProductDependencies = (
 				8B75A1B52A2CB7D500E8810E /* GoogleGenerativeAI */,
 			);
 			productName = "XCAChatGPTWatch Watch App";
-			productReference = 8B0575F0298FA9D800A56C9A /* XCAChatGPTWatch Watch App.app */;
+			productReference = 8B0575F0298FA9D800A56C9A /* LangSwiftUIWatch Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8B057610298FBDB600A56C9A /* XCAChatGPTTV */ = {
+		8B057610298FBDB600A56C9A /* LangSwiftUITV */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8B05761C298FBDB700A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTTV" */;
+			buildConfigurationList = 8B05761C298FBDB700A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUITV" */;
 			buildPhases = (
 				8B05760D298FBDB600A56C9A /* Sources */,
 				8B05760E298FBDB600A56C9A /* Frameworks */,
@@ -264,17 +269,17 @@
 			);
 			dependencies = (
 			);
-			name = XCAChatGPTTV;
+			name = LangSwiftUITV;
 			packageProductDependencies = (
 				8B75A1B72A2CB7DA00E8810E /* GoogleGenerativeAI */,
 			);
 			productName = XCAChatGPTTV;
-			productReference = 8B057611298FBDB600A56C9A /* XCAChatGPTTV.app */;
+			productReference = 8B057611298FBDB600A56C9A /* LangSwiftUITV.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8B91BFFF298AD09E0079AF26 /* XCAChatGPT */ = {
+		8B91BFFF298AD09E0079AF26 /* LangSwiftUI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8B91C00E298AD09F0079AF26 /* Build configuration list for PBXNativeTarget "XCAChatGPT" */;
+			buildConfigurationList = 8B91C00E298AD09F0079AF26 /* Build configuration list for PBXNativeTarget "LangSwiftUI" */;
 			buildPhases = (
 				8B91BFFC298AD09E0079AF26 /* Sources */,
 				8B91BFFD298AD09E0079AF26 /* Frameworks */,
@@ -284,16 +289,17 @@
 			);
 			dependencies = (
 			);
-			name = XCAChatGPT;
+			name = LangSwiftUI;
 			packageProductDependencies = (
 				8B612E2929D68CE3008DF5AF /* GPTEncoder */,
 				8BC0F8CF29F157C800D6B492 /* Markdown */,
 				8BC0F8D229F157E600D6B492 /* Highlighter */,
 				8B75A1B02A2CB7C600E8810E /* GoogleGenerativeAI */,
 				6E9856992AE9C9BB00ABAE9A /* Adapty */,
+				6E28313B2AEB206F00F92FCB /* Lottie */,
 			);
 			productName = XCAChatGPT;
-			productReference = 8B91C000298AD09E0079AF26 /* XCAChatGPT.app */;
+			productReference = 8B91C000298AD09E0079AF26 /* LangSwiftUI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -323,7 +329,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8B91BFFB298AD09E0079AF26 /* Build configuration list for PBXProject "XCAChatGPT" */;
+			buildConfigurationList = 8B91BFFB298AD09E0079AF26 /* Build configuration list for PBXProject "LangSwiftUI" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -338,16 +344,17 @@
 				8BC0F8D129F157E600D6B492 /* XCRemoteSwiftPackageReference "HighlighterSwift" */,
 				8B75A1AF2A2CB7C600E8810E /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 				6E9856982AE9C9BB00ABAE9A /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */,
+				6E28313A2AEB206F00F92FCB /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			productRefGroup = 8B91C001298AD09E0079AF26 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8B91BFFF298AD09E0079AF26 /* XCAChatGPT */,
-				8B057581298E52C000A56C9A /* XCAChatGPTMac */,
-				8B0575EA298FA9D800A56C9A /* XCAChatGPTWatch */,
-				8B0575EF298FA9D800A56C9A /* XCAChatGPTWatch Watch App */,
-				8B057610298FBDB600A56C9A /* XCAChatGPTTV */,
+				8B91BFFF298AD09E0079AF26 /* LangSwiftUI */,
+				8B057581298E52C000A56C9A /* LangSwiftUIMac */,
+				8B0575EA298FA9D800A56C9A /* LangSwiftUIWatch */,
+				8B0575EF298FA9D800A56C9A /* LangSwiftUIWatch Watch App */,
+				8B057610298FBDB600A56C9A /* LangSwiftUITV */,
 			);
 		};
 /* End PBXProject section */
@@ -424,6 +431,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E2831392AEB201200F92FCB /* LottieViewAnimation.swift in Sources */,
 				6E98569E2AE9CBCB00ABAE9A /* AppDelegate.swift in Sources */,
 				8B91C012298AD0CE0079AF26 /* ChatGPTAPI.swift in Sources */,
 				8B91C006298AD09E0079AF26 /* ContentView.swift in Sources */,
@@ -445,7 +453,7 @@
 /* Begin PBXTargetDependency section */
 		8B0575F3298FA9D800A56C9A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8B0575EF298FA9D800A56C9A /* XCAChatGPTWatch Watch App */;
+			target = 8B0575EF298FA9D800A56C9A /* LangSwiftUIWatch Watch App */;
 			targetProxy = 8B0575F2298FA9D800A56C9A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -830,7 +838,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8B057590298E52C000A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTMac" */ = {
+		8B057590298E52C000A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUIMac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B05758E298E52C000A56C9A /* Debug */,
@@ -839,7 +847,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8B057603298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTWatch Watch App" */ = {
+		8B057603298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUIWatch Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B057601298FA9DA00A56C9A /* Debug */,
@@ -848,7 +856,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8B057604298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTWatch" */ = {
+		8B057604298FA9DA00A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUIWatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B0575FE298FA9DA00A56C9A /* Debug */,
@@ -857,7 +865,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8B05761C298FBDB700A56C9A /* Build configuration list for PBXNativeTarget "XCAChatGPTTV" */ = {
+		8B05761C298FBDB700A56C9A /* Build configuration list for PBXNativeTarget "LangSwiftUITV" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B05761D298FBDB700A56C9A /* Debug */,
@@ -866,7 +874,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8B91BFFB298AD09E0079AF26 /* Build configuration list for PBXProject "XCAChatGPT" */ = {
+		8B91BFFB298AD09E0079AF26 /* Build configuration list for PBXProject "LangSwiftUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B91C00C298AD09F0079AF26 /* Debug */,
@@ -875,7 +883,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8B91C00E298AD09F0079AF26 /* Build configuration list for PBXNativeTarget "XCAChatGPT" */ = {
+		8B91C00E298AD09F0079AF26 /* Build configuration list for PBXNativeTarget "LangSwiftUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B91C00F298AD09F0079AF26 /* Debug */,
@@ -887,6 +895,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6E28313A2AEB206F00F92FCB /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		6E9856982AE9C9BB00ABAE9A /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/adaptyteam/AdaptySDK-iOS.git";
@@ -930,6 +946,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6E28313B2AEB206F00F92FCB /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E28313A2AEB206F00F92FCB /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
 		6E9856992AE9C9BB00ABAE9A /* Adapty */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6E9856982AE9C9BB00ABAE9A /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */;

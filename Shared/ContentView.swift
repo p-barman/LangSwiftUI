@@ -29,33 +29,60 @@ struct ContentView: View {
        ]
     
     var body: some View {
-            NavigationView {
-                chatListView
+        NavigationView {
+            chatListView
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        TypingText(title: "langwallet")
+                        TypingText(title: "LANGWALLET")
                     }
                 }
-                .navigationBarItems(trailing: SettingsViewButton(showSettings: $showSettingsView)) // Bind the button's action to the state variable
-                                .fullScreenCover(isPresented: $showSettingsView) {
-                                    NavigationView {// Use the fullScreenCover modifier
-                                        SettingsView(showSettings: $showSettingsView)
+                .navigationBarItems(trailing:
+                                HStack(spacing: 15) {
+                                    Button(action: {
+                                        // Clear chat action
+                                        vm.clearChat()
+                                    }) {
+                                        Image(systemName: "eraser") // Assuming you're using SF Symbols, otherwise replace with your asset name
+                                            .padding(5)
+                                            .foregroundColor(.gray)
+                                            .cornerRadius(5)
                                     }
-                                }
-            }
+                        SettingsViewButton(showSettings: $showSettingsView)
+                    }
+                )
+                .fullScreenCover(isPresented: $showSettingsView) {
+                    NavigationView {
+                        SettingsView(showSettings: $showSettingsView)
+                    }
+                }
         }
+    }
+    
     
     var chatListView: some View {
-        
         ScrollViewReader { proxy in
             VStack(spacing: 0) {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        ForEach(vm.messages) { message in
-                            MessageRowView(message: message) { message in
-                                Task { @MainActor in
-                                    await vm.retry(message: message)
+                        // If messages is empty, display the ZStack
+                        if vm.messages.isEmpty {
+                            ZStack {
+                                Image("langicon")
+                                    .resizable()
+                                    .frame(maxWidth: 100, maxHeight: 100)
+                                    .clipShape(Circle())
+                                LottieView(name: "loading", loopMode: .loop)
+                                    .frame(width: 250, height: 150)
+                            }
+                            .frame(width: 150, height: 100)
+                        } else {
+                            // Otherwise, display the messages
+                            ForEach(vm.messages) { message in
+                                MessageRowView(message: message) { message in
+                                    Task { @MainActor in
+                                        await vm.retry(message: message)
+                                    }
                                 }
                             }
                         }
@@ -67,20 +94,16 @@ struct ContentView: View {
                 Divider()
                 bottomView(image: "profile", proxy: proxy)
                 Spacer()
-            } //scroll to the bottom on change of last response message
-            .onChange(of: vm.messages.last?.responseText) { _ in  scrollToBottom(proxy: proxy)
+            }
+            // scroll to the bottom on change of last response message
+            .onChange(of: vm.messages.last?.responseText) { _ in
+                scrollToBottom(proxy: proxy)
             }
         }
         .background(colorScheme == .light ? .white : Color(red: 52/255, green: 53/255, blue: 65/255, opacity: 0.5))
-//        .navigationBarItems(trailing: HStack {
-//                    SettingsViewButton(showSettings: $showSettingsView)
-//                })
-//                .navigationDestination(isPresented: $showSettingsView) {
-//                    SettingsView()
-//                }
-        
-
     }
+
+    
     
     
      
@@ -245,6 +268,8 @@ struct TypingText: View {
     
     var body: some View {
         Text(String(title.prefix(displayedCharactersCount)))
+            .bold() // This will make the text bold
+            .font(.system(size: 24))
             .onAppear {
                 Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                     if displayedCharactersCount < title.count {
