@@ -7,8 +7,8 @@
 
 import Foundation
 
-class MessageRow: ObservableObject, Identifiable {
-
+class MessageRow: ObservableObject, Identifiable, Equatable {
+    
 
     @Published var isInteractingwithModel: Bool
     
@@ -31,6 +31,10 @@ class MessageRow: ObservableObject, Identifiable {
     var responseError: String?
     
     @Published var isFromUser: Bool
+    
+    static func == (lhs: MessageRow, rhs: MessageRow) -> Bool {
+            return lhs.id == rhs.id
+        }
     
     init(isFromUser: Bool, isInteractingwithModel: Bool, sendImage: String, sendText: String, responseImage: String, responseText: String, responseError: String? = nil) {
         self.isInteractingwithModel = isInteractingwithModel

@@ -13,7 +13,9 @@ struct ContentView: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.requestReview) var requestReview
-    @StateObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY"))
+    @ObservedObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY"))
+
+//    @StateObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY"))
 //    @StateObject var websocketVM = WebSocketViewModel.websocketVMweb
 
     @State private var showSettingsView: Bool = false
@@ -99,20 +101,33 @@ struct ContentView: View {
             .onChange(of: vm.messages.last?.responseText) { _ in
                 scrollToBottom(proxy: proxy)
             }
+            .onChange(of: vm.isEndOfStream) { endOfStream in
+                if endOfStream {
+                    vm.isEndOfStream = false
+                    // Trigger the API call here, passing the responseText from the last message
+                    let lastResponseText = vm.messages.last?.responseText ?? ""
+                    let lastUserMessage = vm.messages[vm.messages.count - 2].sendText ?? "" // Assuming user message is one before the last
+                    Task {
+                        await vm.fetchSuggestedQuestions(lastUserMessage: lastResponseText)
+                        
+                    }
+                    
+                }
+            }
+
         }
         .background(colorScheme == .light ? .white : Color(red: 52/255, green: 53/255, blue: 65/255, opacity: 0.5))
     }
 
     
-    
-    
+
      
     // user input declared
     func bottomView(image: String, proxy: ScrollViewProxy) -> some View {
         VStack(spacing: 0 ) {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 8) {
-                    ForEach(suggestions, id: \.self) { suggestion in
+                    ForEach(vm.suggested_user_inputs, id: \.self) { suggestion in
                         Button(action: {
                             vm.inputMessage = suggestion
                         }) {

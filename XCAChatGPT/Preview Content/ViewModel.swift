@@ -16,8 +16,23 @@ class ViewModel: ObservableObject {
             print("Messages updated:", messages)
         }
     }
+    @Published var isEndOfStream: Bool = false
+
     @Published var inputMessage: String = ""
     @Published var webSocketVM = WebSocketViewModel(url: "ws://127.0.0.1:8000/ws/expl_user_identifier")
+    @Published var suggested_user_inputs: [String] = [
+        "price of eth",
+        "what's hot in crypto?",
+        "what's my balance",
+        "send langwallet.eth 10 USDC",
+        "best ETH lending rate on arbitrum"
+    ]{
+        didSet {
+            if oldValue != suggested_user_inputs {
+                print("Value changed from \(oldValue) to \(suggested_user_inputs)")
+            }
+        }
+    }
     //    @State messageRow: MessageRow()
     
     private let api: ChatUAPI
@@ -51,7 +66,32 @@ class ViewModel: ObservableObject {
         await send(text:message.sendText)
     }
     
-    
+    struct SuggestedInputsResponse: Codable {
+        var suggested_user_inputs: [String]
+    }
+
+    func fetchSuggestedQuestions(lastUserMessage: String) async {
+        let url = URL(string: "http://127.0.0.1:8000/suggested_user_inputs")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let bodyData = ["text": lastUserMessage]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData, options: [])
+
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            print("Received from server:", String(data: data, encoding: .utf8) ?? "invalid string data")
+            let fetchedQuestionsResponse = try JSONDecoder().decode(SuggestedInputsResponse.self, from: data)
+            DispatchQueue.main.async {
+                print("fetched q's - ", fetchedQuestionsResponse.suggested_user_inputs)
+                self.suggested_user_inputs = fetchedQuestionsResponse.suggested_user_inputs
+            }
+        } catch {
+            print("Error fetching questions:", error)
+        }
+    }
+
+
     @MainActor
     private func send(text: String) async {
         isInteractingWithModel = true
@@ -113,7 +153,10 @@ class ViewModel: ObservableObject {
                         strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
                         
                         if let isEndOfStream = json["end_of_stream"] as? Bool, isEndOfStream {
+                            
                             strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                            strongSelf.isEndOfStream = isEndOfStream
+
                         }
                     }
                 }
