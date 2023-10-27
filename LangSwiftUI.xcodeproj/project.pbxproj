@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		011D70932AEC5D400068CFC0 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D70922AEC5D400068CFC0 /* constants.swift */; };
+		011D70942AEC5D400068CFC0 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D70922AEC5D400068CFC0 /* constants.swift */; };
+		011D70952AEC5D400068CFC0 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D70922AEC5D400068CFC0 /* constants.swift */; };
 		6E2831392AEB201200F92FCB /* LottieViewAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */; };
 		6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6E28313B2AEB206F00F92FCB /* Lottie */; };
 		6E9856892AD9DA6A00ABAE9A /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */; };
@@ -66,6 +69,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		011D70922AEC5D400068CFC0 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
 		6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieViewAnimation.swift; sourceTree = "<group>"; };
 		6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		6E98568A2AD9DAC200ABAE9A /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
@@ -137,6 +141,7 @@
 				8B91C005298AD09E0079AF26 /* ContentView.swift */,
 				6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */,
 				6E98569B2AE9CA8300ABAE9A /* Adapty.swift */,
+				011D70922AEC5D400068CFC0 /* constants.swift */,
 				6E9856962AE9A82500ABAE9A /* SettingsView.swift */,
 				6E9856942AE6D66000ABAE9A /* SharedViewModel.swift */,
 			);
@@ -317,6 +322,7 @@
 					};
 					8B0575EA298FA9D800A56C9A = {
 						CreatedOnToolsVersion = 14.2;
+						LastSwiftMigration = 1420;
 					};
 					8B0575EF298FA9D800A56C9A = {
 						CreatedOnToolsVersion = 14.2;
@@ -406,6 +412,7 @@
 			files = (
 				8B057593298E52D900A56C9A /* ChatGPTAPI.swift in Sources */,
 				8B057594298E52D900A56C9A /* ContentView.swift in Sources */,
+				011D70942AEC5D400068CFC0 /* constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,6 +422,7 @@
 			files = (
 				8B057605298FA9E900A56C9A /* ContentView.swift in Sources */,
 				8B05760A298FA9E900A56C9A /* ChatGPTAPI.swift in Sources */,
+				011D70952AEC5D400068CFC0 /* constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +447,7 @@
 				6E9856892AD9DA6A00ABAE9A /* ViewModel.swift in Sources */,
 				6E98568D2AD9DFB200ABAE9A /* DotLoadingView.swift in Sources */,
 				8B91C004298AD09E0079AF26 /* XCAChatGPTApp.swift in Sources */,
+				011D70932AEC5D400068CFC0 /* constants.swift in Sources */,
 				6E98568F2AD9DFCC00ABAE9A /* MessageRowView.swift in Sources */,
 				6E98569C2AE9CA8300ABAE9A /* Adapty.swift in Sources */,
 				6E9856912ADB297D00ABAE9A /* WebSocketViewModel.swift in Sources */,
@@ -469,7 +478,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"XCAChatGPTMac/Preview Content\"";
-				DEVELOPMENT_TEAM = 5C2XD9H2JS;
+				DEVELOPMENT_TEAM = DW44ATLQ37;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -480,7 +489,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.alfianlosari.XCAChatGPTMac;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lang-ai-mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -498,7 +507,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"XCAChatGPTMac/Preview Content\"";
-				DEVELOPMENT_TEAM = 5C2XD9H2JS;
+				DEVELOPMENT_TEAM = DW44ATLQ37;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -509,7 +518,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.alfianlosari.XCAChatGPTMac;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lang-ai-mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -521,13 +530,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5C2XD9H2JS;
+				DEVELOPMENT_TEAM = DW44ATLQ37;
 				INFOPLIST_KEY_CFBundleDisplayName = XCAChatGPTWatch;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alfianlosari.XCAChatGPTWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared/LangSwiftUIWatch-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -536,13 +553,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5C2XD9H2JS;
+				DEVELOPMENT_TEAM = DW44ATLQ37;
 				INFOPLIST_KEY_CFBundleDisplayName = XCAChatGPTWatch;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alfianlosari.XCAChatGPTWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared/LangSwiftUIWatch-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -783,9 +807,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20231027;
 				DEVELOPMENT_ASSET_PATHS = "\"XCAChatGPT/Preview Content\"";
-				DEVELOPMENT_TEAM = 5C2XD9H2JS;
+				DEVELOPMENT_TEAM = DW44ATLQ37;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -797,8 +821,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.alfianlosari.XCAChatGPT;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lang-ai";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -812,9 +836,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20231027;
 				DEVELOPMENT_ASSET_PATHS = "\"XCAChatGPT/Preview Content\"";
-				DEVELOPMENT_TEAM = 5C2XD9H2JS;
+				DEVELOPMENT_TEAM = DW44ATLQ37;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -826,8 +850,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.alfianlosari.XCAChatGPT;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lang-ai";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

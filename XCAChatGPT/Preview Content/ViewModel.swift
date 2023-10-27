@@ -19,13 +19,15 @@ class ViewModel: ObservableObject {
     @Published var isEndOfStream: Bool = false
 
     @Published var inputMessage: String = ""
-    @Published var webSocketVM = WebSocketViewModel(url: "ws://127.0.0.1:8000/ws/expl_user_identifier")
+    @Published var webSocketVM = WebSocketViewModel(url: Constants.webSocketURL)
+
     @Published var suggested_user_inputs: [String] = [
         "price of eth",
         "what's hot in crypto?",
-        "what's my balance",
-        "send langwallet.eth 10 USDC",
-        "best ETH lending rate on arbitrum"
+        "vitalik.eth net worth",
+        "ftx trial update",
+        "best ETH lending rate on arbitrum",
+        "ai-related cryptos with promise?"
     ]{
         didSet {
             if oldValue != suggested_user_inputs {
@@ -71,7 +73,7 @@ class ViewModel: ObservableObject {
     }
 
     func fetchSuggestedQuestions(lastUserMessage: String) async {
-        let url = URL(string: "http://127.0.0.1:8000/suggested_user_inputs")!
+        let url = URL(string: Constants.httpUrlForSuggestedInputs)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -125,8 +127,8 @@ class ViewModel: ObservableObject {
         )
         self.messages.append(userMessageRow)
         
-        // Initialize the message row for the LangWallet response
-        var langWalletMessageRow = MessageRow(
+        // Initialize the message row for the Lang  response
+        var langMessageRow = MessageRow(
             isFromUser: false,
             isInteractingwithModel: true,
             sendImage: "langicon",
@@ -134,9 +136,9 @@ class ViewModel: ObservableObject {
             responseImage: "langicon",
             responseText: ""
         )
-        self.messages.append(langWalletMessageRow)
+        self.messages.append(langMessageRow)
         
-        // Capture the current message index for later use (LangWallet's index)
+        // Capture the current message index for later use (Lang's index)
         let currentIndex = messages.count - 1
         
         // Define the response handling mechanism
@@ -162,6 +164,12 @@ class ViewModel: ObservableObject {
                 }
             }
         }
+    }
+}
+
+extension ViewModel {
+    var messagesAsString: String {
+        return messages.map { "\($0.sendText) - \($0.responseText)" }.joined(separator: "\n")
     }
 }
 

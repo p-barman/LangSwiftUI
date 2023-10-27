@@ -11,10 +11,12 @@ import SwiftUI
 struct SettingsView: View {
     
     @Binding var showSettings: Bool
+    @ObservedObject var viewModel: ViewModel
     
-    @State private var flagText: String = ""
+    @State private var user_report_text: String = ""
     @FocusState var isFocused: Bool
     @State private var showAlert: Bool = false
+    
     
     var body: some View {
             List {
@@ -37,10 +39,10 @@ struct SettingsView: View {
     var flagComment: some View {
         Section {
             ZStack(alignment: .topLeading) {
-                TextEditor(text: $flagText)
+                TextEditor(text: $user_report_text)
                     .frame(height: 100)
                     .focused($isFocused)
-                if flagText.isEmpty {
+                if user_report_text.isEmpty {
                     Text("Reason for flagging content")
                         .foregroundColor(.gray)
                         .padding(.top, 8)
@@ -61,17 +63,21 @@ struct SettingsView: View {
             HStack {
                 Button("Clear") {
                     withAnimation {
-                        flagText = ""
+                        user_report_text = ""
                         isFocused = false
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(flagText.isEmpty)
+                .disabled(user_report_text.isEmpty)
                 
                 Button ("Report Content") {
                     withAnimation {
-                        sendReport(content: flagText)
-                        flagText = ""
+                        let messagesString = viewModel.messages.map { $0.sendText + " - " + $0.responseText }.joined(separator: "\n")
+                                            
+                                            // Pass the messagesString to your sendReport function
+                        sendReport(user_report_text: user_report_text, convo: messagesString)
+                                            
+                        user_report_text = ""
                         isFocused = false
                     }
                 }
@@ -79,11 +85,32 @@ struct SettingsView: View {
         }
     }
     
-    func sendReport(content: String) {
-        // Here, you'd typically send this content to your backend server.
-        // For now, I'll just show an alert for demonstration purposes.
-        showAlert = true
+    
+    struct SimpleData: Codable {
+        let text: String
     }
+    func sendReport(user_report_text: String, convo: String) {
+        let url = URL(string: Constants.httpUrlReportConent)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let data = SimpleData(text: " User report: " + user_report_text + " \n Convo: " + convo)
+        let jsonData = try? JSONEncoder().encode(data)
+
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Failed to report content. Error: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            print("Successfully reported content.")
+        }.resume()
+    showAlert = true
+    }
+
+    
 }
 
 struct SettingsViewButton: View {
@@ -104,12 +131,12 @@ struct SettingsViewButton: View {
 
 
 
-struct SettingsView_Preview: PreviewProvider {
-    @State static private var showSettingsView = true
-    
-    static var previews: some View {
-        NavigationStack {
-            SettingsView(showSettings: $showSettingsView)
-        }
-    }
-}
+//struct SettingsView_Preview: PreviewProvider {
+//    @State static private var showSettingsView = true
+//    
+//    static var previews: some View {
+//        NavigationStack {
+//            SettingsView(showSettings: $showSettingsView, )
+//        }
+//    }
+//}

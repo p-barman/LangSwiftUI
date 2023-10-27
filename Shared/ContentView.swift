@@ -22,13 +22,6 @@ struct ContentView: View {
 
     @FocusState var isTextFieldFocused: Bool
     
-    let suggestions = [
-           "price of eth",
-           "fund my wallet with 30 USDC",
-           "what's my balance",
-           "send langwallet.eth 10 USDC",
-           "best ETH lending rate on arbitrum"
-       ]
     
     var body: some View {
         NavigationView {
@@ -36,7 +29,7 @@ struct ContentView: View {
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        TypingText(title: "LANGWALLET")
+                        TypingText(title: "LANG")
                     }
                 }
                 .navigationBarItems(trailing:
@@ -50,12 +43,12 @@ struct ContentView: View {
                                             .foregroundColor(.gray)
                                             .cornerRadius(5)
                                     }
-                        SettingsViewButton(showSettings: $showSettingsView)
+                    SettingsViewButton(showSettings: $showSettingsView)
                     }
                 )
                 .fullScreenCover(isPresented: $showSettingsView) {
                     NavigationView {
-                        SettingsView(showSettings: $showSettingsView)
+                        SettingsView(showSettings: $showSettingsView, viewModel: vm)
                     }
                 }
         }

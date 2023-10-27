@@ -19,7 +19,7 @@ struct MessageRowView: View {
                 UserMessageRow(text: message.sendText, image: message.sendImage)
                     .frame(maxWidth: .infinity, alignment: .trailing) // User on the LEFT
             } else {
-                LangWalletMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
+                LangMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
                     .frame(maxWidth: .infinity, alignment: .leading) // Server on the RIGHT
             }
         }
@@ -29,7 +29,7 @@ struct MessageRowView: View {
         MessageRow(text: text, image: image, bgColor: colorScheme == .light ? Color.blue : Color.gray.opacity(0.5))
     }
 
-    func LangWalletMessageRow(text: String, image: String, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
+    func LangMessageRow(text: String, image: String, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
         MessageRow(text: message.responseText, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: showDotLoading)
     }
 
