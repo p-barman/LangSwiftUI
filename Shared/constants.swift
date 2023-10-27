@@ -27,7 +27,7 @@ struct PersistentUserState {
 
 
 struct Constants {
-    static let environment: Environment = .dev // change to .prod when needed
+    static let environment: Environment = .prod // change to .prod when needed
     
     enum Environment {
         case dev
@@ -40,7 +40,7 @@ struct Constants {
         case .dev:
             return "ws://127.0.0.1:8000/ws"
         case .prod:
-            return "ws://http://34.123.113.101:8000/ws"
+            return "ws://34.123.113.101:8000/ws"
         }
     }
     
@@ -49,7 +49,7 @@ struct Constants {
         case .dev:
             return "http://127.0.0.1:8000"
         case .prod:
-            return "http://http://34.123.113.101:8000"
+            return "http://34.123.113.101:8000"
         }
     }
     
