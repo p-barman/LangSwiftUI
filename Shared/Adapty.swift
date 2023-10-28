@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Adapty
 import StoreKit
+import RevenueCat
 
 
 class UserStateModel: ObservableObject {
@@ -21,132 +22,355 @@ class UserStateModel: ObservableObject {
         self.agreedToTerms = UserDefaults.standard.bool(forKey: "agreedToTerms")
         
         Adapty.getProfile { result in
-            if let profile = try? result.get(),
+            if let profile = try? result.get() as? AdaptyProfile,
                profile.accessLevels["premium"]?.isActive ?? false {
                 
                 print("this user is subscribed to ", profile.subscriptions)
                 self.isSubscriptionActive = true
             }
-            
         }
+
     }
 }
 
-
-//struct Paywall: View {
-//    @Environment(\.openURL) var openURL
-////    @State private var selectedPackage: Package?
-//    @State private var selectedProduct: SKProduct?
-//    @State private var waitingForApplePurchase: Bool = false
-//    @State private var selectedRestore: Bool?
-//
-//    @Binding var isPaywallPresented: Bool
-//
-//    @State var currentOffering: Offering?
-//    @State private var goUnlimitedClicked: Bool = false
-//    @State private var hideLottie: Bool = false
-//
-//    @State var paywall: AdaptyPaywall?
-//    @State var products: [AdaptyProduct]?
-//    @State var iterableProducts: [SKProduct]?
-//
-//    @EnvironmentObject var userViewModel: UserStateModel
-//}
-//
-//
-//extension SubscriptionPeriod {
-//    var durationTitle: String {
-//        switch self.unit {
-//        case .day: return "day"
-//        case .week: return "week"
-//        case .month: return "month"
-//        case .year: return "year"
-//        @unknown default: return "Unknown"
-//        }
-//    }
-//    var periodTitle: String {
-//        let periodString = "\(self.value) \(self.durationTitle)"
-//        let pluralized = self.value > 1 ?  periodString + "s" : periodString
-//        return pluralized
-//    }
-//}
-//
-//
-
-
 struct Paywall: View {
     @Environment(\.openURL) var openURL
+    @State private var selectedPackage: Package?
     @State private var selectedProduct: SKProduct?
-    @State private var waitingForApplePurchase: Bool = false
+    @State private var waitingForApplePurchase = false
     @State private var selectedRestore: Bool?
     
     @Binding var isPaywallPresented: Bool
+    
+    @State var currentOffering: Offering?
+    @State private var goUnlimitedClicked = false
+    @State private var hideLottie = false
+    
     @State var paywall: AdaptyPaywall?
     @State var products: [AdaptyProduct]?
     @State var iterableProducts: [SKProduct]?
     
-    @EnvironmentObject var userViewModel: UserStateModel
+    @EnvironmentObject var userStateModel: UserStateModel
     
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
-            Text("Available Subscriptions")
-                .font(.title)
+        VStack (alignment: .center, spacing: 1) {
+            Text("You've used up all your api credits")
+                .bold()
+                .font(.system(size: 12))
+                .padding(.bottom, 23)
+                .padding(.top, 15)
             
-            //            List(iterableProducts ?? [], id: \.productIdentifier) { product in
-            //                VStack(alignment: .leading) {
-            //                    Text(product.localizedTitle)
-            //                        .font(.headline)
-            //
-            //                    Text(product.localizedDescription)
-            //                        .font(.subheadline)
-            //                        .lineLimit(2)
-            //
-            //                    Text("\(product.priceLocale.currencySymbol ?? "")\(product.price.stringValue) per \(product.subscriptionPeriod?.periodTitle ?? "")")
-            //                        .font(.caption)
-            //
-            //                    Button("Purchase") {
-            //                        // handle purchase logic here
-            //                        self.selectedProduct = product
-            //                    }
-            //                    .foregroundColor(.white)
-            //                    .padding(.vertical, 10)
-            //                    .padding(.horizontal, 20)
-            //                    .background(Color.blue)
-            //                    .cornerRadius(10)
-            //                }
-            //            }
-            //
-            //            Button("Restore Purchases") {
-            //                // handle restore purchases logic here
-            //                self.selectedRestore = true
-            //            }
-            //
-            //            Spacer()
-            //        }
-            //        .padding()
-            //        .onAppear {
-            //            // Load products from Adapty
-            //            loadProducts()
-            //        }
-            //    }
+            Text("Go Unlimited!")
+                .bold()
+                .font(.largeTitle)
+                .foregroundColor(.green)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 25)
+                .onTapGesture{
+                    print("Go Unlimited! clicked")
+                    self.goUnlimitedClicked.toggle()
+                    self.hideLottie.toggle()
+                }
             
-//            func loadProducts() {
-//                // Assuming Adapty has a function to fetch paywalls and products
-//                Adapty.getPaywalls { paywalls, products, error in
-//                    self.paywall = paywalls?.first
-//                    self.products = products
-//                    self.iterableProducts = products?.compactMap { $0.skProduct }
-//                }
+            VStack (spacing: 7) {
+                HStack {
+                    Image(systemName: "shareplay")
+                    Text("Newest 2023 model")
+                        .font(.system(size: 20))
+                }
+                HStack {
+                    Image(systemName: "checkmark.icloud")
+                    Text("Unlimited usage")
+                        .font(.system(size: 20))
+                }
+                .padding(.bottom, 1)
+            }
+            
+            Spacer().frame(height:10 )
+            
+            ZStack {
+                if self.selectedPackage != nil || ((self.goUnlimitedClicked || currentOffering == nil) && !self.hideLottie) {
+                    Image("openai")
+                        .frame(maxWidth: 100, maxHeight: 100)
+                        .clipShape(Circle())
+                    LottieView(name: "loading", loopMode: .loop)
+                        .frame(width: 250, height: 150)
+                }
+            }
+            .frame(width: 150, height: 100)
+            .padding(.bottom, 40)
+            
+            if self.waitingForApplePurchase {
+                ProgressView()
+                Spacer().frame(height:15)
+            }
+            
+            VStack  {
+                if iterableProducts != nil {
+                    ForEach(iterableProducts!, id: \.productIdentifier) { product in
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 20)
+                                .frame(maxWidth: 370, maxHeight: 60)
+                                .foregroundColor(.blue)
+                                .shadow(color: .gray, radius: 3)
+                            
+                            Text("\(productBtnDescription(str: product.localizedDescription, product: product))")
+                                .foregroundColor(.white)
+                                .font(.system(size: 18))
+                        }
+                        .buttonStyle(GrowingButton())
+                        .padding(.bottom, 5)
+                        .padding(.bottom, 5)
+                        .opacity(90)
+                        .scaleEffect(self.selectedProduct == product ? 1.1 : 1)
+                        .shadow(radius: self.selectedProduct == product ? 3 : 0)
+                        .onTapGesture {
+                            self.waitingForApplePurchase = true
+                            self.selectedProduct = product
+                            self.selectedRestore = false
+                            
+                            let aProduct: AdaptyProduct = self.getProductWith(productId: product.productIdentifier, totalNumProducts: 4)!
+                            
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                Adapty.makePurchase(product: aProduct as! AdaptyPaywallProduct) { result in
+                                    switch result {
+                                    case let .success(info):
+                                           if info.profile.accessLevels["premium"]?.isActive ?? false {
+                                               print("Successful purchase of —— ", aProduct, "what's profile? ", info.profile)
+                                            userStateModel.isSubscriptionActive = true
+                                        }
+                                        self.waitingForApplePurchase = false
+                                        
+                                    case let .failure(error):
+                                        print(error)
+                                        self.waitingForApplePurchase = false
+                                        self.selectedProduct = nil
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    
+                    Spacer().frame(height: 30)
+                    
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .frame(maxWidth: 200, maxHeight: 30)
+                            .foregroundColor(Color(red: 44/255, green: 47/255, blue: 56/255))
+                            .shadow(color: .gray, radius: 3)
+                        
+                        Text("Subscribed? Restore")
+                            .foregroundColor(.white)
+                            .font(.system(size: 12))
+                    }
+                    .buttonStyle(GrowingButton())
+                    .padding(.bottom, 5)
+                    .padding(.bottom, 1)
+                    .opacity(90)
+                    .scaleEffect(self.selectedRestore == true ? 1.1 : 1)
+                    .onTapGesture {
+                        self.selectedRestore = true
+                        self.selectedProduct = nil
+                        Adapty.restorePurchases({ (result) in
+                            switch result {
+                            case let .success(profile):
+                                if profile.accessLevels["premium"]?.isActive ?? false {
+                                    print("Successful subscription restored. profile: ", profile)
+                                    userStateModel.isSubscriptionActive = true
+                                }
+                                else {
+                                    print("Subscription restore NOT successful. profile: ", profile)
+                                    userStateModel.isSubscriptionActive = false
+                                }
+                                
+                            case let .failure(error):
+                                print("failed to restore purchases", error)
+                            }
+                        })
+                    }
+                }
+            }
+            
+            Spacer().frame(height: 15)
+            
+            HStack {
+                HStack {
+                    Button(action: {
+                        openURL(URL(string: "https://doc-hosting.flycricket.io/chat-uncensored-privacy-policy/de86be7f-07bb-4225-a158-f166279d1c6c/privacy")!)
+                    }) {
+                        Text("Privacy Policy")
+                            .font(.system(size: 11))
+                            .frame(maxWidth: 100, maxHeight: 6)
+                            .zIndex(-1)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .frame(width: 90, height: 6)
+                    .padding([.leading], 5)
+                    .zIndex(-1)
+                }
+                
+                HStack {
+                    Button(action: {
+                        openURL(URL(string: "https://doc-hosting.flycricket.io/chat-uncensored-end-user-licence-agreement-eula/4ff67351-cb16-4ff3-871d-8679a20b4f0d/privacy")!)
+                    }) {
+                        Text("Terms of Use")
+                            .font(.system(size: 11))
+                            .frame(maxWidth: 100, maxHeight: 6)
+                            .zIndex(-1)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .frame(width: 90, height: 6)
+                    .padding([.leading], 5)
+                    .zIndex(-1)
+                }
+            }
+            .task {
+                do {
+                    await Adapty.getPaywall("main") { result in
+                        switch result {
+                        case let .success(paywall):
+                            print("paywall", paywall)
+                            self.paywall = paywall
+                            
+                            Adapty.getPaywallProducts(paywall: paywall) { result in
+                                switch result {
+                                case let .success(products):
+                                    self.products = products
+                                    self.iterableProducts = (products.map { $0.skProduct })
+                                    let x: SKProduct = products[0].skProduct
+                                    print("x", x.localizedDescription)
+                                    print("x", x.price)
+                                    
+                                case let .failure(error): break
+                                }
+                            }
+                        case let .failure(error): break
+                        }
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+            .onAppear {
+                
+            }
+        }
+    }
+    
+    func getProductWith(productId: String, totalNumProducts: Int) -> AdaptyProduct? {
+        for index in 0..<totalNumProducts {
+            if (self.products![index].vendorProductId == productId) {
+                return self.products![index]
+            }
+//            else {
+//                return self.products![1]
 //            }
+        }
+        return self.products![3]
+    }
+}
+
+struct GrowingButton: ButtonStyle
+{
+    // required method to conform to ButtonStyle protocol
+    func makeBody(configuration: Self.Configuration) -> some View
+    {
+        GrowingButtonView(configuration: configuration)
+    }
+    
+    struct GrowingButtonView: View
+    {
+        let configuration: GrowingButton.Configuration
+        
+        var body: some View
+        {
+            configuration.label
+                .padding()
+                .background(.blue)
+                .foregroundColor(.white)
+                .clipShape(Capsule())
+                .scaleEffect(configuration.isPressed ? 1.2 : 1)
+                .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
         }
     }
 }
 
-
-
-struct Paywall_View: PreviewProvider {
-    static var previews: some View {
-        Paywall(isPaywallPresented: .constant(true))
+extension Package {
+    func terms(for package: Package) -> String {
+        if let intro = package.storeProduct.introductoryDiscount {
+            if intro.price == 0 {
+                return "\(intro.subscriptionPeriod.periodTitle) free trial, then \(package.storeProduct.localizedPriceString)/\(package.storeProduct.subscriptionPeriod!.periodTitle)"
+            } else {
+                return "\(package.storeProduct.localizedPriceString)/\(package.storeProduct.subscriptionPeriod!.periodTitle)"
+            }
+        } else {
+            return "\(package.storeProduct.localizedPriceString)/\(package.storeProduct.subscriptionPeriod!.periodTitle)"
+        }
     }
-
 }
+
+extension SubscriptionPeriod {
+    var durationTitle: String {
+        switch self.unit {
+        case .day: return "day"
+        case .week: return "week"
+        case .month: return "month"
+        case .year: return "year"
+        @unknown default: return "Unknown"
+        }
+    }
+    
+    var periodTitle: String {
+        let periodString = "\(self.value) \(self.durationTitle)"
+        let pluralized = self.value > 1 ?  periodString + "s" : periodString
+        return pluralized
+    }
+}
+
+func productBtnDescription(str: String, product: SKProduct) -> String {
+    if str == "" {
+        switch product.productIdentifier {
+        case "cgptu_6999_1yr":
+            return "1 year for \(product.price)"
+        case "cgptu_4999_6mo":
+            return "6 months for \(product.price)"
+        case "cgptu_1499_1mo":
+            return "1 month for \(product.price)"
+        case "cgptu_699_1w":
+            return "1 week for \(product.price)"
+        default:
+            return "\(product.price) - click for duration"
+        }
+    }
+    
+    if let components = try? str.components(separatedBy: " - ")  {
+        let timeComponents = components[1].components(separatedBy: ", ")
+        if timeComponents.count == 2 && timeComponents[0].contains("year") {
+            return "\(timeComponents[0]) for \(product.price)"
+        } else {
+            do {
+                var title = "\(components[1].components(separatedBy: ", ")[0]) for \(product.price)" ?? nil
+                if title == nil {
+                    return "\(product.price) - click for duration"
+                }
+                return title!
+            } catch {
+                print("error getting title - will return click for duration")
+            }
+        }
+    } else {
+        return "click for price"
+    }
+}
+
+
+
+
+//struct Paywall_View: PreviewProvider {
+//    static var previews: some View {
+//        let userState = UserStateModel()
+//        userState.isSubscriptionActive = false
+//        return PaywallView(userState: userState)
+//    }
+//}

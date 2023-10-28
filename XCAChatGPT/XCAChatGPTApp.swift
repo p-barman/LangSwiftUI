@@ -10,14 +10,32 @@ import SwiftUI
 
 import SwiftUI
 
+//@main
+//struct ChatApp: App {
+//
+//    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+//
+//    var body: some Scene {
+//        WindowGroup {
+////            ContentView()
+//            Paywall(isPaywallPresented: true)
+//        }
+//    }
+//}
+
 @main
 struct ChatApp: App {
-    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+    @State private var isPaywallPresented: Bool = true
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if isPaywallPresented {
+                Paywall(isPaywallPresented: $isPaywallPresented)
+            } else {
+                // ContentView or whatever you want to show when the paywall is dismissed
+                ContentView()
+            }
         }
     }
 }

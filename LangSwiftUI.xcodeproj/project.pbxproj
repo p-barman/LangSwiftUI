@@ -56,6 +56,9 @@
 		011D70C22AEC74080068CFC0 /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 011D70BE2AEC74080068CFC0 /* loading.json */; };
 		6E2831392AEB201200F92FCB /* LottieViewAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */; };
 		6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6E28313B2AEB206F00F92FCB /* Lottie */; };
+		6E2831412AED3E5C00F92FCB /* ReceiptParser in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831402AED3E5C00F92FCB /* ReceiptParser */; };
+		6E2831432AED3E5C00F92FCB /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831422AED3E5C00F92FCB /* RevenueCat */; };
+		6E2831472AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831462AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation */; };
 		6E9856892AD9DA6A00ABAE9A /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */; };
 		6E98568B2AD9DAC200ABAE9A /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568A2AD9DAC200ABAE9A /* MessageRow.swift */; };
 		6E98568D2AD9DFB200ABAE9A /* DotLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568C2AD9DFB200ABAE9A /* DotLoadingView.swift */; };
@@ -168,8 +171,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E98569A2AE9C9BB00ABAE9A /* Adapty in Frameworks */,
+				6E2831472AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation in Frameworks */,
 				8B612E2A29D68CE3008DF5AF /* GPTEncoder in Frameworks */,
 				8BC0F8D329F157E600D6B492 /* Highlighter in Frameworks */,
+				6E2831412AED3E5C00F92FCB /* ReceiptParser in Frameworks */,
+				6E2831432AED3E5C00F92FCB /* RevenueCat in Frameworks */,
 				8BC0F8D029F157C800D6B492 /* Markdown in Frameworks */,
 				8B75A1B12A2CB7C600E8810E /* GoogleGenerativeAI in Frameworks */,
 				6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */,
@@ -348,6 +354,9 @@
 				8B75A1B02A2CB7C600E8810E /* GoogleGenerativeAI */,
 				6E9856992AE9C9BB00ABAE9A /* Adapty */,
 				6E28313B2AEB206F00F92FCB /* Lottie */,
+				6E2831402AED3E5C00F92FCB /* ReceiptParser */,
+				6E2831422AED3E5C00F92FCB /* RevenueCat */,
+				6E2831462AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation */,
 			);
 			productName = XCAChatGPT;
 			productReference = 8B91C000298AD09E0079AF26 /* LangSwiftUI.app */;
@@ -397,6 +406,7 @@
 				8B75A1AF2A2CB7C600E8810E /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 				6E9856982AE9C9BB00ABAE9A /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */,
 				6E28313A2AEB206F00F92FCB /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			productRefGroup = 8B91C001298AD09E0079AF26 /* Products */;
 			projectDirPath = "";
@@ -1022,6 +1032,14 @@
 				kind = branch;
 			};
 		};
+		6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 		6E9856982AE9C9BB00ABAE9A /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/adaptyteam/AdaptySDK-iOS.git";
@@ -1069,6 +1087,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6E28313A2AEB206F00F92FCB /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
+		};
+		6E2831402AED3E5C00F92FCB /* ReceiptParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = ReceiptParser;
+		};
+		6E2831422AED3E5C00F92FCB /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
+		};
+		6E2831462AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat_CustomEntitlementComputation;
 		};
 		6E9856992AE9C9BB00ABAE9A /* Adapty */ = {
 			isa = XCSwiftPackageProductDependency;
