@@ -28,9 +28,9 @@
 		011D70A52AEC70740068CFC0 /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568E2AD9DFCC00ABAE9A /* MessageRowView.swift */; };
 		011D70A62AEC70760068CFC0 /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568E2AD9DFCC00ABAE9A /* MessageRowView.swift */; };
 		011D70A72AEC707C0068CFC0 /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568E2AD9DFCC00ABAE9A /* MessageRowView.swift */; };
-		011D70A82AEC70820068CFC0 /* XCAChatGPTApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* XCAChatGPTApp.swift */; };
-		011D70A92AEC70830068CFC0 /* XCAChatGPTApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* XCAChatGPTApp.swift */; };
-		011D70AA2AEC70840068CFC0 /* XCAChatGPTApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* XCAChatGPTApp.swift */; };
+		011D70A82AEC70820068CFC0 /* LangChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* LangChatApp.swift */; };
+		011D70A92AEC70830068CFC0 /* LangChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* LangChatApp.swift */; };
+		011D70AA2AEC70840068CFC0 /* LangChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* LangChatApp.swift */; };
 		011D70AB2AEC708D0068CFC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98569D2AE9CBCB00ABAE9A /* AppDelegate.swift */; };
 		011D70AC2AEC708E0068CFC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98569D2AE9CBCB00ABAE9A /* AppDelegate.swift */; };
 		011D70AD2AEC708F0068CFC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98569D2AE9CBCB00ABAE9A /* AppDelegate.swift */; };
@@ -56,9 +56,7 @@
 		011D70C22AEC74080068CFC0 /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 011D70BE2AEC74080068CFC0 /* loading.json */; };
 		6E2831392AEB201200F92FCB /* LottieViewAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */; };
 		6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6E28313B2AEB206F00F92FCB /* Lottie */; };
-		6E2831412AED3E5C00F92FCB /* ReceiptParser in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831402AED3E5C00F92FCB /* ReceiptParser */; };
-		6E2831432AED3E5C00F92FCB /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831422AED3E5C00F92FCB /* RevenueCat */; };
-		6E2831472AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831462AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation */; };
+		6E28314A2AED492C00F92FCB /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831492AED492C00F92FCB /* RevenueCat */; };
 		6E9856892AD9DA6A00ABAE9A /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */; };
 		6E98568B2AD9DAC200ABAE9A /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568A2AD9DAC200ABAE9A /* MessageRow.swift */; };
 		6E98568D2AD9DFB200ABAE9A /* DotLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98568C2AD9DFB200ABAE9A /* DotLoadingView.swift */; };
@@ -82,7 +80,7 @@
 		8B75A1B42A2CB7D200E8810E /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 8B75A1B32A2CB7D200E8810E /* GoogleGenerativeAI */; };
 		8B75A1B62A2CB7D500E8810E /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 8B75A1B52A2CB7D500E8810E /* GoogleGenerativeAI */; };
 		8B75A1B82A2CB7DA00E8810E /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 8B75A1B72A2CB7DA00E8810E /* GoogleGenerativeAI */; };
-		8B91C004298AD09E0079AF26 /* XCAChatGPTApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* XCAChatGPTApp.swift */; };
+		8B91C004298AD09E0079AF26 /* LangChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C003298AD09E0079AF26 /* LangChatApp.swift */; };
 		8B91C006298AD09E0079AF26 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B91C005298AD09E0079AF26 /* ContentView.swift */; };
 		8B91C008298AD09F0079AF26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B91C007298AD09F0079AF26 /* Assets.xcassets */; };
 		8B91C00B298AD09F0079AF26 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B91C00A298AD09F0079AF26 /* Preview Assets.xcassets */; };
@@ -134,7 +132,7 @@
 		8B0575F0298FA9D800A56C9A /* LangSwiftUIWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LangSwiftUIWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B057611298FBDB600A56C9A /* LangSwiftUITV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LangSwiftUITV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B91C000298AD09E0079AF26 /* LangSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LangSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8B91C003298AD09E0079AF26 /* XCAChatGPTApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCAChatGPTApp.swift; sourceTree = "<group>"; };
+		8B91C003298AD09E0079AF26 /* LangChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LangChatApp.swift; sourceTree = "<group>"; };
 		8B91C005298AD09E0079AF26 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8B91C007298AD09F0079AF26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B91C00A298AD09F0079AF26 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -171,11 +169,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E98569A2AE9C9BB00ABAE9A /* Adapty in Frameworks */,
-				6E2831472AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation in Frameworks */,
 				8B612E2A29D68CE3008DF5AF /* GPTEncoder in Frameworks */,
+				6E28314A2AED492C00F92FCB /* RevenueCat in Frameworks */,
 				8BC0F8D329F157E600D6B492 /* Highlighter in Frameworks */,
-				6E2831412AED3E5C00F92FCB /* ReceiptParser in Frameworks */,
-				6E2831432AED3E5C00F92FCB /* RevenueCat in Frameworks */,
 				8BC0F8D029F157C800D6B492 /* Markdown in Frameworks */,
 				8B75A1B12A2CB7C600E8810E /* GoogleGenerativeAI in Frameworks */,
 				6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */,
@@ -237,7 +233,7 @@
 		8B91C002298AD09E0079AF26 /* XCAChatGPT */ = {
 			isa = PBXGroup;
 			children = (
-				8B91C003298AD09E0079AF26 /* XCAChatGPTApp.swift */,
+				8B91C003298AD09E0079AF26 /* LangChatApp.swift */,
 				6E98569D2AE9CBCB00ABAE9A /* AppDelegate.swift */,
 				6E98569F2AE9CE3300ABAE9A /* UserState.swift */,
 				8B91C007298AD09F0079AF26 /* Assets.xcassets */,
@@ -354,9 +350,7 @@
 				8B75A1B02A2CB7C600E8810E /* GoogleGenerativeAI */,
 				6E9856992AE9C9BB00ABAE9A /* Adapty */,
 				6E28313B2AEB206F00F92FCB /* Lottie */,
-				6E2831402AED3E5C00F92FCB /* ReceiptParser */,
-				6E2831422AED3E5C00F92FCB /* RevenueCat */,
-				6E2831462AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation */,
+				6E2831492AED492C00F92FCB /* RevenueCat */,
 			);
 			productName = XCAChatGPT;
 			productReference = 8B91C000298AD09E0079AF26 /* LangSwiftUI.app */;
@@ -406,7 +400,7 @@
 				8B75A1AF2A2CB7C600E8810E /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 				6E9856982AE9C9BB00ABAE9A /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */,
 				6E28313A2AEB206F00F92FCB /* XCRemoteSwiftPackageReference "lottie-ios" */,
-				6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */,
+				6E2831482AED492C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			productRefGroup = 8B91C001298AD09E0079AF26 /* Products */;
 			projectDirPath = "";
@@ -474,7 +468,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				011D70AB2AEC708D0068CFC0 /* AppDelegate.swift in Sources */,
-				011D70A82AEC70820068CFC0 /* XCAChatGPTApp.swift in Sources */,
+				011D70A82AEC70820068CFC0 /* LangChatApp.swift in Sources */,
 				011D70A52AEC70740068CFC0 /* MessageRowView.swift in Sources */,
 				011D70992AEC70550068CFC0 /* ViewModel.swift in Sources */,
 				8B057593298E52D900A56C9A /* ChatGPTAPI.swift in Sources */,
@@ -496,7 +490,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				011D70AC2AEC708E0068CFC0 /* AppDelegate.swift in Sources */,
-				011D70A92AEC70830068CFC0 /* XCAChatGPTApp.swift in Sources */,
+				011D70A92AEC70830068CFC0 /* LangChatApp.swift in Sources */,
 				011D70A62AEC70760068CFC0 /* MessageRowView.swift in Sources */,
 				011D709A2AEC70560068CFC0 /* ViewModel.swift in Sources */,
 				8B057605298FA9E900A56C9A /* ContentView.swift in Sources */,
@@ -518,7 +512,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				011D70A12AEC706C0068CFC0 /* WebSocketViewModel.swift in Sources */,
-				011D70AA2AEC70840068CFC0 /* XCAChatGPTApp.swift in Sources */,
+				011D70AA2AEC70840068CFC0 /* LangChatApp.swift in Sources */,
 				011D70A42AEC70710068CFC0 /* DotLoadingView.swift in Sources */,
 				011D70982AEC6FB10068CFC0 /* SettingsView.swift in Sources */,
 				011D70B02AEC70970068CFC0 /* UserState.swift in Sources */,
@@ -546,7 +540,7 @@
 				6E9856972AE9A82500ABAE9A /* SettingsView.swift in Sources */,
 				6E9856892AD9DA6A00ABAE9A /* ViewModel.swift in Sources */,
 				6E98568D2AD9DFB200ABAE9A /* DotLoadingView.swift in Sources */,
-				8B91C004298AD09E0079AF26 /* XCAChatGPTApp.swift in Sources */,
+				8B91C004298AD09E0079AF26 /* LangChatApp.swift in Sources */,
 				011D70932AEC5D400068CFC0 /* constants.swift in Sources */,
 				6E98568F2AD9DFCC00ABAE9A /* MessageRowView.swift in Sources */,
 				6E98569C2AE9CA8300ABAE9A /* Adapty.swift in Sources */,
@@ -1032,12 +1026,12 @@
 				kind = branch;
 			};
 		};
-		6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+		6E2831482AED492C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RevenueCat/purchases-ios";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
+				kind = exactVersion;
+				version = 4.15.4;
 			};
 		};
 		6E9856982AE9C9BB00ABAE9A /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */ = {
@@ -1088,20 +1082,10 @@
 			package = 6E28313A2AEB206F00F92FCB /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
 		};
-		6E2831402AED3E5C00F92FCB /* ReceiptParser */ = {
+		6E2831492AED492C00F92FCB /* RevenueCat */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */;
-			productName = ReceiptParser;
-		};
-		6E2831422AED3E5C00F92FCB /* RevenueCat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			package = 6E2831482AED492C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */;
 			productName = RevenueCat;
-		};
-		6E2831462AED3E5C00F92FCB /* RevenueCat_CustomEntitlementComputation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6E28313F2AED3E5C00F92FCB /* XCRemoteSwiftPackageReference "purchases-ios" */;
-			productName = RevenueCat_CustomEntitlementComputation;
 		};
 		6E9856992AE9C9BB00ABAE9A /* Adapty */ = {
 			isa = XCSwiftPackageProductDependency;

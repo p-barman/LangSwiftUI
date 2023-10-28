@@ -25,7 +25,11 @@ import SwiftUI
 
 @main
 struct ChatApp: App {
+    
+    @StateObject var userStateModel = UserStateModel()
+    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     @State private var isPaywallPresented: Bool = true
 
     var body: some Scene {

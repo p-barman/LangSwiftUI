@@ -54,16 +54,17 @@ struct Paywall: View {
     
     var body: some View {
         VStack (alignment: .center, spacing: 1) {
-            Text("You've used up all your api credits")
+            Text("You've used up your lang tokens!")
                 .bold()
-                .font(.system(size: 12))
+                .foregroundColor(.blue)
+                .font(.system(size: 14))
                 .padding(.bottom, 23)
                 .padding(.top, 15)
             
             Text("Go Unlimited!")
                 .bold()
                 .font(.largeTitle)
-                .foregroundColor(.green)
+                .foregroundColor(.purple)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 25)
                 .onTapGesture{
@@ -75,12 +76,12 @@ struct Paywall: View {
             VStack (spacing: 7) {
                 HStack {
                     Image(systemName: "shareplay")
-                    Text("Newest 2023 model")
+                    Text("Priority responses")
                         .font(.system(size: 20))
                 }
                 HStack {
                     Image(systemName: "checkmark.icloud")
-                    Text("Unlimited usage")
+                    Text("Premium features")
                         .font(.system(size: 20))
                 }
                 .padding(.bottom, 1)
@@ -90,9 +91,9 @@ struct Paywall: View {
             
             ZStack {
                 if self.selectedPackage != nil || ((self.goUnlimitedClicked || currentOffering == nil) && !self.hideLottie) {
-                    Image("openai")
+                    Image("langicon")
                         .frame(maxWidth: 100, maxHeight: 100)
-                        .clipShape(Circle())
+                        .clipShape(RoundedRectangle(cornerRadius:20))
                     LottieView(name: "loading", loopMode: .loop)
                         .frame(width: 250, height: 150)
                 }
@@ -331,14 +332,14 @@ extension SubscriptionPeriod {
 func productBtnDescription(str: String, product: SKProduct) -> String {
     if str == "" {
         switch product.productIdentifier {
-        case "cgptu_6999_1yr":
-            return "1 year for \(product.price)"
-        case "cgptu_4999_6mo":
-            return "6 months for \(product.price)"
-        case "cgptu_1499_1mo":
-            return "1 month for \(product.price)"
-        case "cgptu_699_1w":
-            return "1 week for \(product.price)"
+        case "langai_25999_1y":
+            return "\(product.price)/year"
+        case "langai_2999_1m":
+            return "\(product.price)/month"
+        case "langai_999_1w":
+            return "\(product.price)/week"
+        case "langai_199_1w":
+            return "\(product.price)/week"
         default:
             return "\(product.price) - click for duration"
         }
