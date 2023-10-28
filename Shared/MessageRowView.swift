@@ -24,6 +24,7 @@ struct MessageRowView: View {
             }
         }
         .padding(.horizontal)
+        .padding(.vertical, 10)
     }
     func UserMessageRow(text: String, image: String) -> some View {
         MessageRow(text: text, image: image, bgColor: colorScheme == .light ? Color.blue : Color.gray.opacity(0.5))

@@ -273,6 +273,7 @@ struct TypingText: View {
         Text(String(title.prefix(displayedCharactersCount)))
             .bold() // This will make the text bold
             .font(.system(size: 24))
+//            .fontWidth(width: 5)
             .onAppear {
                 Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                     if displayedCharactersCount < title.count {

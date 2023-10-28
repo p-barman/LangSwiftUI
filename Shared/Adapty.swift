@@ -17,6 +17,7 @@ class UserStateModel: ObservableObject {
     @Published var isSubscriptionActive = false
     @Published var agreedToTerms: Bool = (UserDefaults.standard.bool(forKey: "agreedToTerms") ?? false)
     @Published var isBackendLive: Bool = false
+    @Published var profileId: String = ""  // to reference in app wheter user has active subscription
     
     init() {
         self.agreedToTerms = UserDefaults.standard.bool(forKey: "agreedToTerms")
@@ -111,7 +112,7 @@ struct Paywall: View {
                     ForEach(iterableProducts!, id: \.productIdentifier) { product in
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
-                                .frame(maxWidth: 370, maxHeight: 60)
+                                .frame(maxWidth: 270, maxHeight: 60)
                                 .foregroundColor(.blue)
                                 .shadow(color: .gray, radius: 3)
                             
@@ -121,7 +122,7 @@ struct Paywall: View {
                         }
                         .buttonStyle(GrowingButton())
                         .padding(.bottom, 5)
-                        .padding(.bottom, 5)
+                        
                         .opacity(90)
                         .scaleEffect(self.selectedProduct == product ? 1.1 : 1)
                         .shadow(radius: self.selectedProduct == product ? 3 : 0)
@@ -287,7 +288,8 @@ struct GrowingButton: ButtonStyle
         var body: some View
         {
             configuration.label
-                .padding()
+                .padding(.horizontal, 50)
+                .frame(width:60)
                 .background(.blue)
                 .foregroundColor(.white)
                 .clipShape(Capsule())
@@ -333,13 +335,13 @@ func productBtnDescription(str: String, product: SKProduct) -> String {
     if str == "" {
         switch product.productIdentifier {
         case "langai_25999_1y":
-            return "\(product.price)/year"
+            return " $\(product.price)/year"
         case "langai_2999_1m":
-            return "\(product.price)/month"
+            return "$\(product.price)/month"
         case "langai_999_1w":
-            return "\(product.price)/week"
+            return "$\(product.price)/week"
         case "langai_199_1w":
-            return "\(product.price)/week"
+            return "$\(product.price)/week"
         default:
             return "\(product.price) - click for duration"
         }
@@ -348,10 +350,10 @@ func productBtnDescription(str: String, product: SKProduct) -> String {
     if let components = try? str.components(separatedBy: " - ")  {
         let timeComponents = components[1].components(separatedBy: ", ")
         if timeComponents.count == 2 && timeComponents[0].contains("year") {
-            return "\(timeComponents[0]) for \(product.price)"
+            return "\(timeComponents[0]) at $\(product.price)"
         } else {
             do {
-                var title = "\(components[1].components(separatedBy: ", ")[0]) for \(product.price)" ?? nil
+                var title = "\(components[1].components(separatedBy: ", ")[0]) at $\(product.price)" ?? nil
                 if title == nil {
                     return "\(product.price) - click for duration"
                 }
@@ -364,6 +366,9 @@ func productBtnDescription(str: String, product: SKProduct) -> String {
         return "click for price"
     }
 }
+
+
+
 
 
 
