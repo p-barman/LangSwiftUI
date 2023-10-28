@@ -157,25 +157,20 @@ struct ContentView: View {
                     .focused($isTextFieldFocused)
                     .disabled(vm.isInteractingWithModel)
                 
-                if vm.isInteractingWithModel {
-                    DotLoadingView().frame(width: 60, height:20)
-                } else {
-                    Button {
-                        Task { @MainActor in
-                            isTextFieldFocused = false
-                            scrollToBottom(proxy: proxy) // helps scrolling to the last message
-                            //send the message
-                            await vm.sendTapped()
-                        }
-                        
-                    } label: {
-                        Image(systemName: "paperplane.circle.fill")
-                            .rotationEffect(.degrees(45))
-                            .font(.system(size:30))
+                Button {
+                    Task { @MainActor in
+                        isTextFieldFocused = false
+                        scrollToBottom(proxy: proxy) // helps scrolling to the last message
+                        //send the message
+                        await vm.sendTapped()
                     }
-                    .disabled(vm.inputMessage
-                        .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                } label: {
+                    Image(systemName: "paperplane.circle.fill")
+                        .rotationEffect(.degrees(45))
+                        .font(.system(size:30))
                 }
+                .disabled(vm.inputMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || vm.isInteractingWithModel)
+
             }
             .padding(.horizontal, 16)
             .padding(.top, 12)

@@ -19,7 +19,7 @@ struct MessageRowView: View {
                 UserMessageRow(text: message.sendText, image: message.sendImage)
                     .frame(maxWidth: .infinity, alignment: .trailing) // User on the LEFT
             } else {
-                LangMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
+                LangMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel || message.responseText.isEmpty)
                     .frame(maxWidth: .infinity, alignment: .leading) // Server on the RIGHT
             }
         }
@@ -29,11 +29,11 @@ struct MessageRowView: View {
         MessageRow(text: text, image: image, bgColor: colorScheme == .light ? Color.blue : Color.gray.opacity(0.5))
     }
 
-    func LangMessageRow(text: String, image: String, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
-        MessageRow(text: message.responseText, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: showDotLoading)
+    func LangMessageRow(text: String, image: String, responseError: String? = nil, showDotLoading: Bool) -> some View {
+        MessageRow(text: message.responseText, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: message.responseText.isEmpty)
     }
 
-
+    
     func MessageRow(text: String, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
         HStack(spacing: 12) {
             MessageImage(image: image)
@@ -41,26 +41,27 @@ struct MessageRowView: View {
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(text)
-                    .font(.system(size: 16))
-                    .foregroundColor(bgColor == Color.blue ? .white : .primary)
-                    .padding(10)
-                    .background(bgColor)
-                    .cornerRadius(16)
-
-                if let error = responseError {
-                    Text(error)
-                        .font(.system(size: 14))
-                        .foregroundColor(.red)
-                        .padding(.horizontal, 10)
-                }
-
-                if showDotLoading {
+                if text.isEmpty && showDotLoading {
                     DotLoadingView()
+                } else {
+                    Text(text)
+                        .font(.system(size: 16))
+                        .foregroundColor(bgColor == Color.blue ? .white : .primary)
+                        .padding(10)
+                        .background(bgColor)
+                        .cornerRadius(16)
+
+                    if let error = responseError {
+                        Text(error)
+                            .font(.system(size: 14))
+                            .foregroundColor(.red)
+                            .padding(.horizontal, 10)
+                    }
                 }
             }
         }
     }
+
 
     func DotLoadingView() -> some View {
         HStack(spacing: 3) {
