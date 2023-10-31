@@ -15,7 +15,7 @@ class WebSocketViewModel: ObservableObject {
     private let urlString: String
     var onMessageReceived: ((String) -> Void)?
     
-    @Published var messageReceived = ""
+//    @Published var messageReceived = ""
     
     init(url: String) {
         self.urlString = url
@@ -46,14 +46,20 @@ class WebSocketViewModel: ObservableObject {
     }
     
     func connect() {
+        // Check if the webSocketTask is already running
+        if webSocketTask?.state == .running {
+            print("WebSocket is already active.")
+            return
+        }
+
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
             return
         }
-        
+
         webSocketTask = urlSession.webSocketTask(with: url)
         webSocketTask?.resume()
-        
+
         receiveMessage()
     }
     
@@ -69,26 +75,6 @@ class WebSocketViewModel: ObservableObject {
         }
     }
     
-    //    private func receiveMessage() {
-    //        webSocketTask?.receive { [weak self] result in
-    //            switch result {
-    //            case .success(let message):
-    //                switch message {
-    //                case .string(let text):
-    //                    DispatchQueue.main.async {
-    //                        self?.messageReceived = text
-    //                    }
-    //                default:
-    //                    print("Received unhandled message type")
-    //                }
-    //
-    //                // Continue listening for the next message
-    //                self?.receiveMessage()
-    //            case .failure(let error):
-    //                print("Error receiving message: \(error)")
-    //            }
-    //        }
-    //    }
     private func receiveMessage() {
         webSocketTask?.receive { [weak self] result in
             switch result {
@@ -101,15 +87,34 @@ class WebSocketViewModel: ObservableObject {
                 default:
                     print("Received unhandled message type")
                 }
-                
+
                 // Continue listening for the next message
                 self?.receiveMessage()
             case .failure(let error):
                 print("Error receiving message: \(error)")
-                DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
-                    self?.connect()
-                }
+                
+                // Handle the error and decide if we need to reconnect
+                self?.handleError(error)
             }
+        }
+    }
+    private func handleError(_ error: Error) {
+        // Here, you can add more refined error checks.
+        // For demonstration purposes, I'll just use a generic error check.
+
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet, .networkConnectionLost, .timedOut:
+                // For these types of errors, attempt a reconnection after a delay
+                DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
+                    self.connect()
+                }
+            default:
+                // For other types of errors, decide if you need to reconnect or handle differently
+                print("Received an error that doesn't warrant reconnection: \(urlError.localizedDescription)")
+            }
+        } else {
+            print("Received a non-URL error: \(error.localizedDescription)")
         }
     }
 }
