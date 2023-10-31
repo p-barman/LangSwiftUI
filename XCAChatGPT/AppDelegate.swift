@@ -15,7 +15,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        Adapty.activate("public_live_nJs3XlAe.ABYgz9pWslrvnZwnfdmI")
+        Adapty.activate("public_live_nJs3XlAe.ABYgz9pWslrvnZwnfdmI",  customerUserId: PersistentUserState.userIdentifier ?? "default", storeKit2Usage: .forIntroEligibilityCheck)
         
         return true
     }

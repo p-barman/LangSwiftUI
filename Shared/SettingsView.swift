@@ -16,6 +16,8 @@ struct SettingsView: View {
     @State private var user_report_text: String = ""
     @FocusState var isFocused: Bool
     @State private var showAlert: Bool = false
+    @State private var userName: String = "your profile"
+
     
     
     var body: some View {
@@ -88,17 +90,31 @@ struct SettingsView: View {
     }
     
     var userProfile: some View {
+        // Move @State declaration to the top level of SettingsView
+        
         HStack {
-            Image(systemName: "person.crop.circle").resizable()
-                .frame(width: 50, height: 50).foregroundColor(.blue)
+            Image(systemName: "person.crop.circle")
+                .resizable()
+                .frame(width: 50, height: 50)
+                .foregroundColor(.blue)
                 
             VStack(alignment: .leading) {
-                Text("Blake Nielsen").font(.title2)
-                Text("0x2845674dfuygh7g45F87").font(.system(size: 12))
-            }.padding(.leading)
+                Text(self.userName)
+                    .font(.title2)
+                    .foregroundColor(.black)
+                    .background(RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray, lineWidth: 1)
+                        .background(Color.white))
+                
+                Text(PersistentUserState.userIdentifier ?? "0x2845674dfuygh7g45F87").font(.system(size: 12))
+            }
+            .padding(.leading)
         }
+        .padding()
     }
-    
+
+
+        
     
     var switchPlatforms: some View {
         Section(header: Text("Switch Platforms")) {

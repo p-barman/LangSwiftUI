@@ -26,7 +26,7 @@ class UserStateModel: ObservableObject {
             if let profile = try? result.get() as? AdaptyProfile,
                profile.accessLevels["premium"]?.isActive ?? false {
                 
-                print("this user is subscribed to ", profile.subscriptions)
+                print("this user is subscribed to: ", profile.subscriptions)
                 self.isSubscriptionActive = true
             }
         }

@@ -30,7 +30,7 @@ struct ChatApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    @State private var isPaywallPresented: Bool = true
+    @State private var isPaywallPresented: Bool = false
     @State var showTerms : Bool = !UserDefaults.standard.bool(forKey: "agreedToTerms")
     
     init() {
@@ -41,48 +41,49 @@ struct ChatApp: App {
 
     var body: some Scene {
         WindowGroup {
-//            if isPaywallPresented {
-//                Paywall(isPaywallPresented: $isPaywallPresented)
-//            } else {
+            if isPaywallPresented {
+                Paywall(isPaywallPresented: $isPaywallPresented)
+            } else {
 //                // ContentView or whatever you want to show when the paywall is dismissed
 //                ContentView()
 //            }
             ContentView()
                 .sheet(isPresented: $showTerms ) {
-                GeometryReader { geometry in
-                    AgreeToTermsView(isPresented: $showTerms)
-                        .environment(\.horizontalSizeClass, .regular)
-                        .environment(\.verticalSizeClass, .regular)
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                        .interactiveDismissDisabled()
-                    
-                        .environmentObject(userStateModel)
-                        .preferredColorScheme(.dark)
-                        .onAppear {
-                            if Adapty.delegate == nil {
-                                Adapty.delegate = appDelegate as? any AdaptyDelegate
-                            }
-                            DispatchQueue.main.async {
-                                //ensure existing users who used to be subscribed have their subscriptions paywalled
-                                Adapty.getProfile { result in
-                                    if let profile = try? result.get(),
-                                       profile.accessLevels["premium"]?.isActive ?? false {
-                                        
-                                        print("this user is subscribed to ", profile.subscriptions)
-                                        userStateModel.isSubscriptionActive = true
-                                        // grant access to premium features
-                                    }
-                                    else {
-                                        print("this user not subscribed ")
-                                        userStateModel.isSubscriptionActive = false
-                                    }
-                                    if let p =  try? result.get() { //get Adapty Profile id to pass into report/filter
-                                        userStateModel.profileId = p.profileId
-                                        
+                    GeometryReader { geometry in
+                        AgreeToTermsView(isPresented: $showTerms)
+                            .environment(\.horizontalSizeClass, .regular)
+                            .environment(\.verticalSizeClass, .regular)
+                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                            .interactiveDismissDisabled()
+                        
+                            .environmentObject(userStateModel)
+                            .preferredColorScheme(.dark)
+                            .onAppear {
+                                if Adapty.delegate == nil {
+                                    Adapty.delegate = appDelegate as? any AdaptyDelegate
+                                }
+                                DispatchQueue.main.async {
+                                    //ensure existing users who used to be subscribed have their subscriptions paywalled
+                                    Adapty.getProfile { result in
+                                        if let profile = try? result.get(),
+                                           profile.accessLevels["premium"]?.isActive ?? false {
+                                            
+                                            print("this user is subscribed to ", profile.subscriptions)
+                                            userStateModel.isSubscriptionActive = true
+                                            // grant access to premium features
+                                        }
+                                        else {
+                                            print("this user not subscribed ")
+                                            userStateModel.isSubscriptionActive = false
+                                        }
+                                        if let p =  try? result.get() { //get Adapty Profile id to pass into report/filter
+                                            userStateModel.profileId = p.profileId
+                                            
+                                        }
                                     }
                                 }
                             }
-                        }
+                    }
                 }
             }
         }

@@ -9,10 +9,19 @@ import Foundation
 import SwiftUI
 
 class MessageRow: ObservableObject, Identifiable, Equatable {
-    
 
     @Published var isInteractingwithModel: Bool
-    
+    let id = UUID()
+
+    let sendImage: String
+    let sendText: String
+    var imageUrl: String?
+    let responseImage: String
+    @Published var responseText: String
+    @Published var attributedResponseText: NSAttributedString? // for links and url clickablity
+    var responseError: String?
+    @Published var isFromUser: Bool
+
     func updateResponseText(text: String) {
             self.responseText += text
             
@@ -27,25 +36,14 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
             }
             self.attributedResponseText = attributedText
         }
+    
 
     func toggleInteractingWithModel(isInteracting: Bool) {
         self.isInteractingwithModel = isInteracting
     }
     
-    let id = UUID()
+ 
 
-    let sendImage: String
-    let sendText: String
-    var imageUrl: String?
-
-
-    let responseImage: String
-    @Published var responseText: String
-    @Published var attributedResponseText: NSAttributedString? // for links and url clickablity
-
-    var responseError: String?
-    
-    @Published var isFromUser: Bool
     
     static func == (lhs: MessageRow, rhs: MessageRow) -> Bool {
             return lhs.id == rhs.id

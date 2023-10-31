@@ -138,6 +138,8 @@ class ViewModel: ObservableObject {
         )
         self.messages.append(langMessageRow)
         
+        
+        
         // Capture the current message index for later use (Lang's index)
         let currentIndex = messages.count - 1
         
@@ -150,6 +152,8 @@ class ViewModel: ObservableObject {
                     //                    if let data = message.data(using: .utf8),
                     //                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                     //                       let text = json["text"] as? Strin zx
+                    
+                    // if message type =
                     let text = message.text
                     strongSelf.messages[currentIndex].updateResponseText(text: text ?? "")
                     strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)

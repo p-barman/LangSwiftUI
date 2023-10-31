@@ -139,6 +139,7 @@ class WebSocketViewModel: ObservableObject {
                 self.onMessageReceived?(messageData)
 
             case .image:
+                
                 break
                 // Handle image
                 // Depending on the data type, you can load the image from a URL, bytes, or file
