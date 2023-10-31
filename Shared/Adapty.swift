@@ -199,7 +199,7 @@ struct Paywall: View {
             HStack {
                 HStack {
                     Button(action: {
-                        openURL(URL(string: "https://doc-hosting.flycricket.io/chat-uncensored-privacy-policy/de86be7f-07bb-4225-a158-f166279d1c6c/privacy")!)
+                        openURL(URL(string: "https://docs.google.com/document/d/e/2PACX-1vRhzZ8BrOkmZ7NUWF80xbAu-Pzn0vDxnJDrfcJVmovaUJ09Ta2cdb2Eq6Wfu-XclI--Yfk-w90knaQx/pub")!)
                     }) {
                         Text("Privacy Policy")
                             .font(.system(size: 11))
@@ -214,7 +214,7 @@ struct Paywall: View {
                 
                 HStack {
                     Button(action: {
-                        openURL(URL(string: "https://doc-hosting.flycricket.io/chat-uncensored-end-user-licence-agreement-eula/4ff67351-cb16-4ff3-871d-8679a20b4f0d/privacy")!)
+                        openURL(URL(string: "https://docs.google.com/document/d/e/2PACX-1vQnpEpthNFVto9C-7M741a4EtHWRjrAsOY98I728zCRg5Ix1CFP4VUr9HlCDJkmlziYg6fPB3jrdyed/pub")!)
                     }) {
                         Text("Terms of Use")
                             .font(.system(size: 11))

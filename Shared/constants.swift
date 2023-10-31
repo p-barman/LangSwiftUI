@@ -57,7 +57,7 @@ struct Constants {
     // Paths
     // Corrected Paths
     static var userIdentifierPath: String {
-        return "/\(PersistentUserState.userIdentifier ?? "expl_user_identifier")"
+        return "/\(PersistentUserState.userIdentifier ?? "expl_user_identifier345")"
     }
     static let suggestedUserInputsPath = "/suggested_user_inputs"
     static let filterContentPath = "/filter_content"

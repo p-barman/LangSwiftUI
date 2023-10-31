@@ -34,6 +34,66 @@ struct MessageRowView: View {
         MessageRow(text: message.responseText, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: message.responseText.isEmpty)
     }
 
+//
+//    func MessageRow(text: String, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
+//        HStack(spacing: 12) {
+//            MessageImage(image: image)
+//                .frame(width: 40, height: 40)
+//                .clipShape(Circle())
+//
+//            VStack(alignment: .leading, spacing: 6) {
+//                if text.isEmpty && showDotLoading {
+//                    DotLoadingView()
+//                } else {
+//                    // Check if the text contains a URL
+//                    if let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue),
+//                                       let match = detector.firstMatch(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count)),
+//                                       let range = Range(match.range, in: text),
+//                       let url = URL(string: String(text[range])) {
+//
+//                        let urlText = text[range]
+//                        let preUrlText = text[text.startIndex..<range.lowerBound]
+//                        let postUrlText = text[range.upperBound..<text.endIndex]
+//
+//                        Text(preUrlText)
+//                            .font(.system(size: 16))
+//                            .foregroundColor(bgColor == Color.blue ? .white : .primary)
+//                        +
+//                        Link(destination: url) {
+//                            Text(String(text[urlText]))
+//
+//                                .font(.system(size: 16))
+//                                .foregroundColor(.blue)
+//                                .underline()
+//                        }
+//                        +
+//                        Text(postUrlText)
+//                            .font(.system(size: 16))
+//                            .foregroundColor(bgColor == Color.blue ? .white : .primary)
+//                    } else {
+//
+//                        // Otherwise, just use the regular Text view
+//                        Text(text)
+//                            .font(.system(size: 16))
+//                            .foregroundColor(bgColor == Color.blue ? .white : .primary)
+//                            .padding(10)
+//                            .background(bgColor)
+//                            .cornerRadius(16)
+//                    }
+//
+//                    if let error = responseError {
+//                        Text(error)
+//                            .font(.system(size: 14))
+//                            .foregroundColor(.red)
+//                            .padding(.horizontal, 10)
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+
+    
     
     func MessageRow(text: String, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
         HStack(spacing: 12) {
@@ -45,23 +105,23 @@ struct MessageRowView: View {
                 if text.isEmpty && showDotLoading {
                     DotLoadingView()
                 } else {
-                    Text(text)
-                        .font(.system(size: 16))
-                        .foregroundColor(bgColor == Color.blue ? .white : .primary)
-                        .padding(10)
-                        .background(bgColor)
-                        .cornerRadius(16)
+                    URLTextView(text: text, bgColor: bgColor)
+                }
 
-                    if let error = responseError {
-                        Text(error)
-                            .font(.system(size: 14))
-                            .foregroundColor(.red)
-                            .padding(.horizontal, 10)
-                    }
+                if let error = responseError {
+                    Text(error)
+                        .font(.system(size: 14))
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 10)
                 }
             }
         }
     }
+
+
+
+
+
 
 
     func DotLoadingView() -> some View {
@@ -92,6 +152,112 @@ struct MessageImage: View {
         .cornerRadius(12.5)
     }
 }
+
+
+//struct LinkTextView: UIViewRepresentable {
+//    var attributedText: NSAttributedString
+//
+//    func makeUIView(context: Context) -> UITextView {
+//        let textView = UITextView()
+//
+//        // Set an intrinsic content size
+//        textView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+//        textView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+//
+//        textView.isScrollEnabled = false // Disable scrolling
+//        textView.isEditable = false     // Ensure it's not editable
+//        textView.textContainer.lineFragmentPadding = 0 // Removes default padding
+//        textView.textContainerInset = .zero // Ensure there's no default text inset
+//        textView.dataDetectorTypes = .link
+//        textView.isUserInteractionEnabled = true
+//        textView.isSelectable = true
+//
+//        return textView
+//    }
+//
+//    func updateUIView(_ uiView: UITextView, context: Context) {
+//        uiView.attributedText = attributedText
+//    }
+//}
+
+//struct AttributedText: UIViewRepresentable {
+//    var attributedString: NSAttributedString
+//
+//    func makeUIView(context: Context) -> UITextView {
+//        let textView = UITextView()
+//        textView.isEditable = false
+//        textView.isScrollEnabled = false
+//        textView.dataDetectorTypes = .all
+//        textView.delegate = context.coordinator
+//        return textView
+//    }
+//
+//    func updateUIView(_ uiView: UITextView, context: Context) {
+//        uiView.attributedText = attributedString
+//    }
+//
+//    func makeCoordinator() -> Coordinator {
+//        Coordinator(self)
+//    }
+//
+//    class Coordinator: NSObject, UITextViewDelegate {
+//        var parent: AttributedText
+//
+//        init(_ parent: AttributedText) {
+//            self.parent = parent
+//        }
+//
+//        // Implement UITextViewDelegate methods if needed
+//    }
+//}
+import SwiftUI
+import UIKit
+
+struct URLTextView: View {
+    let text: String
+    let bgColor: Color
+
+    var body: some View {
+        if let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue),
+           let match = detector.firstMatch(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count)),
+           let range = Range(match.range, in: text),
+           let url = URL(string: String(text[range])) {
+            
+            let urlText = text[range]
+            let preUrlText = text[text.startIndex..<range.lowerBound]
+            let postUrlText = text[range.upperBound..<text.endIndex]
+
+            return AnyView(
+                VStack {
+                    Text(String(preUrlText))
+                        .font(.system(size: 16))
+                        .foregroundColor(bgColor == Color.blue ? .white : .primary)
+                    +
+                       Text(LocalizedStringKey(String(urlText)))
+                                .font(.system(size: 16))
+                                .foregroundColor(.blue)
+                                .underline()
+                    +
+                    Text(String(postUrlText))
+                        .font(.system(size: 16))
+                        .foregroundColor(bgColor == Color.blue ? .white : .primary)
+                }
+            )
+        } else {
+            return AnyView(
+                Text(text)
+                    .font(.system(size: 16))
+                    .foregroundColor(bgColor == Color.blue ? .white : .primary)
+                    .padding(10)
+                    .background(bgColor)
+                    .cornerRadius(16)
+            )
+        }
+    }
+}
+
+
+
 
 
 
