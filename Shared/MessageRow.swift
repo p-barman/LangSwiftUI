@@ -19,7 +19,7 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
             // Detect URLs and update the attributed string
             let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
             let matches = detector?.matches(in: self.responseText, options: [], range: NSRange(location: 0, length: self.responseText.utf16.count))
-
+            
             let attributedText = NSMutableAttributedString(string: self.responseText)
             for match in matches ?? [] {
                 guard let range = Range(match.range, in: self.responseText) else { continue }
@@ -36,6 +36,8 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
 
     let sendImage: String
     let sendText: String
+    var imageUrl: String?
+
 
     let responseImage: String
     @Published var responseText: String
@@ -49,15 +51,17 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
             return lhs.id == rhs.id
         }
     
-    init(isFromUser: Bool, isInteractingwithModel: Bool, sendImage: String, sendText: String, responseImage: String, responseText: String, responseError: String? = nil) {
+    init(isFromUser: Bool, isInteractingwithModel: Bool, sendImage: String, sendText: String, responseImage: String, responseText: String, imageUrl: String? = nil, responseError: String? = nil) {
         self.isInteractingwithModel = isInteractingwithModel
         self.sendImage = sendImage
         self.sendText = sendText
         self.responseImage = responseImage
         self.responseText = responseText
+        self.imageUrl = imageUrl
         self.responseError = responseError
         self.isFromUser = isFromUser
         self.attributedResponseText = NSAttributedString(string: responseText)
     }
+
     // Add an initializer if necessary...
 }

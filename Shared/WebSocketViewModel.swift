@@ -13,7 +13,8 @@ class WebSocketViewModel: ObservableObject {
     private var webSocketTask: URLSessionWebSocketTask?
     private var urlSession: URLSession
     private let urlString: String
-    var onMessageReceived: ((String) -> Void)?
+    var onMessageReceived: ((WebsocketMessageData) -> Void)?
+
     
 //    @Published var messageReceived = ""
     
@@ -81,8 +82,14 @@ class WebSocketViewModel: ObservableObject {
             case .success(let message):
                 switch message {
                 case .string(let text):
-                    DispatchQueue.main.async {
-                        self?.onMessageReceived?(text)
+                    // Decode the received string into WebsocketMessageData
+                    if let data = text.data(using: .utf8),
+                       let messageData = try? JSONDecoder().decode(WebsocketMessageData.self, from: data) {
+                        DispatchQueue.main.async {
+                            self?.handleMessageData(messageData)
+                        }
+                    } else {
+                        print("Error decoding message data")
                     }
                 default:
                     print("Received unhandled message type")
@@ -92,7 +99,7 @@ class WebSocketViewModel: ObservableObject {
                 self?.receiveMessage()
             case .failure(let error):
                 print("Error receiving message: \(error)")
-                
+
                 // Handle the error and decide if we need to reconnect
                 self?.handleError(error)
             }
@@ -116,5 +123,58 @@ class WebSocketViewModel: ObservableObject {
         } else {
             print("Received a non-URL error: \(error.localizedDescription)")
         }
+    }
+    
+    private func handleMessageData(_ messageData: WebsocketMessageData) {
+        var messageType = messageData.message_type
+
+        if messageType == nil {
+            print("Message type is nil. Defaulting to text.")
+            messageType = .text
+        }
+
+        switch messageType {
+            case .text:
+                // Handle text
+                self.onMessageReceived?(messageData)
+
+            case .image:
+                break
+                // Handle image
+                // Depending on the data type, you can load the image from a URL, bytes, or file
+                // Then display it using SwiftUI's Image view or other methods
+
+            case .audio:
+                break
+                // Handle audio
+                // You might want to play it or show a custom audio player UI
+
+            //... Add more cases for video, animation, etc.
+
+        default:
+            print("Unsupported message type: \(messageType!.rawValue)")
+        }
+    }
+
+}
+
+
+import Foundation
+
+struct WebsocketMessageData: Codable {
+    let text: String?                // For text
+    let message_type: MessageType?   // text, audio, image, video, animation
+    let data_type: DataType?         // url, bytes, file
+    let front_end_filename: String?  // e.g., render local sound, image, video, animation via frontend (fast)
+    let url: String?
+    let bytes: Data?
+    let end_of_stream: Bool?// Note: Data type in Swift corresponds to bytes
+
+    enum MessageType: String, Codable {
+        case text, audio, image, video, animation
+    }
+
+    enum DataType: String, Codable {
+        case url, bytes, file
     }
 }

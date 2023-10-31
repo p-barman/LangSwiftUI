@@ -17,10 +17,10 @@ class ViewModel: ObservableObject {
         }
     }
     @Published var isEndOfStream: Bool = false
-
+    
     @Published var inputMessage: String = ""
     @Published var webSocketVM = WebSocketViewModel(url: Constants.webSocketURL)
-
+    
     @Published var suggested_user_inputs: [String] = [
         "price of eth",
         "what's hot in crypto?",
@@ -40,8 +40,8 @@ class ViewModel: ObservableObject {
     private let api: ChatUAPI
     
     func clearChat() {
-            messages.removeAll()
-        }
+        messages.removeAll()
+    }
     
     
     init(api: ChatUAPI) {
@@ -71,7 +71,7 @@ class ViewModel: ObservableObject {
     struct SuggestedInputsResponse: Codable {
         var suggested_user_inputs: [String]
     }
-
+    
     func fetchSuggestedQuestions(lastUserMessage: String) async {
         let url = URL(string: Constants.httpUrlForSuggestedInputs)!
         var request = URLRequest(url: url)
@@ -79,7 +79,7 @@ class ViewModel: ObservableObject {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let bodyData = ["text": lastUserMessage]
         request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData, options: [])
-
+        
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
             print("Received from server:", String(data: data, encoding: .utf8) ?? "invalid string data")
@@ -92,17 +92,17 @@ class ViewModel: ObservableObject {
             print("Error fetching questions:", error)
         }
     }
-
-
+    
+    
     @MainActor
     private func send(text: String) async {
         isInteractingWithModel = true
         
         // Construct the message object
-        let webSocketMessage = WebSocketMessage(
+        let webSocketMessage = WebSocketMessageOut(
             text: text,
             user_secret: "secret",
-            user_identifier: "expl_user_identifier",
+            user_identifier: PersistentUserState.userIdentifier ?? "default_userid",
             msg_id: "1241"
         )
         
@@ -147,19 +147,20 @@ class ViewModel: ObservableObject {
                 self?.isInteractingWithModel = false
                 if let strongSelf = self, currentIndex < strongSelf.messages.count {
                     // Update the corresponding message with the received response
-                    if let data = message.data(using: .utf8),
-                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                       let text = json["text"] as? String {
+                    //                    if let data = message.data(using: .utf8),
+                    //                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                    //                       let text = json["text"] as? Strin zx
+                    let text = message.text
+                    strongSelf.messages[currentIndex].updateResponseText(text: text ?? "")
+                    strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                    
+                    if let isEndOfStream = message.end_of_stream as? Bool, isEndOfStream {
                         
-                        strongSelf.messages[currentIndex].updateResponseText(text: text)
                         strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                        strongSelf.isEndOfStream = isEndOfStream
                         
-                        if let isEndOfStream = json["end_of_stream"] as? Bool, isEndOfStream {
-                            
-                            strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
-                            strongSelf.isEndOfStream = isEndOfStream
-
-                        }
+                        
+                        
                     }
                 }
             }
@@ -174,7 +175,7 @@ extension ViewModel {
 }
 
     
-    struct WebSocketMessage: Codable {
+    struct WebSocketMessageOut: Codable {
         var text: String
         var user_secret: String
         var user_identifier: String
