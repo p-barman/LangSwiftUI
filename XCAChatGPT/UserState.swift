@@ -8,7 +8,7 @@
 import Foundation
 
 
-class UserStateModel: ObservableObject {
-    
-    @Published var isSubscriptionActive = false
-}
+//class UserStateModel: ObservableObject {
+//
+//    @Published var isSubscriptionActive = false
+//}

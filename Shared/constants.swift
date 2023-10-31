@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 struct PersistentUserState {
     
@@ -56,7 +57,7 @@ struct Constants {
     // Paths
     // Corrected Paths
     static var userIdentifierPath: String {
-        return "/\(PersistentUserState.userIdentifier ?? "expl_user_identifier")"
+        return "/\(PersistentUserState.userIdentifier ?? "expl_user_identifier345")"
     }
     static let suggestedUserInputsPath = "/suggested_user_inputs"
     static let filterContentPath = "/filter_content"
@@ -86,4 +87,58 @@ struct Constants {
     }
     
     // ... other constants and paths
+}
+
+
+
+// MARK: AGREED TO TERMS OR SERVICE
+
+struct AgreeToTermsView: View {
+    @StateObject var userStateModel = UserStateModel()
+    @Binding var isPresented: Bool
+    
+
+    var body: some View {
+        VStack {
+            Text("Please agree to the terms of use (EULA):")
+            Spacer().frame(maxHeight: 10)
+            HStack {
+               // Text("(Read the")
+                Button(action: {
+                    if let url = URL(string: "https://doc-hosting.flycricket.io/chat-uncensored-end-user-licence-agreement-eula/4ff67351-cb16-4ff3-871d-8679a20b4f0d/privacy") {
+                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    }
+                    
+                    // add code to open link in browser here
+                }) {
+                    Text("Terms of Service").underline()
+                }
+//                Text(")")
+            }
+            Spacer().frame(maxHeight: 60)
+            Button(action: {
+            
+                isPresented = false
+                userStateModel.agreedToTerms = true
+                UserDefaults.standard.set(true, forKey: "agreedToTerms")
+
+            }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.blue)
+                        .frame(width: 120, height: 40)
+                   
+                    Text("Agree")
+                        .foregroundColor(.white)
+                    
+                }
+            }
+        }
+        .padding()
+        // .background(Color.black)
+        .foregroundColor(Color.white)
+        
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
 }

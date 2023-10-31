@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/alfianlosari/GPTEncoder.git",
       "state" : {
-        "revision" : "8d2057a7073fdbf8fb3ac7b3006e1514cf2f92fb",
-        "version" : "1.0.3"
+        "revision" : "a86968867ab4380e36b904a14c42215f71efe8b4",
+        "version" : "1.0.4"
       }
     },
     {
@@ -55,12 +55,21 @@
       }
     },
     {
+      "identity" : "purchases-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RevenueCat/purchases-ios",
+      "state" : {
+        "revision" : "7f9532438b26ea286fb992d85a60d9f96046a6bb",
+        "version" : "4.15.4"
+      }
+    },
+    {
       "identity" : "swift-cmark",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-cmark.git",
       "state" : {
         "branch" : "gfm",
-        "revision" : "86aeb491675de6f077a3a6df6cbcac1a25dcbee1"
+        "revision" : "3bc2f3e25df0cecc5dc269f7ccae65d0f386f06a"
       }
     },
     {
@@ -69,7 +78,7 @@
       "location" : "https://github.com/apple/swift-markdown",
       "state" : {
         "branch" : "main",
-        "revision" : "528d49cb5130e9c84081e13e7bd639a011b9f89d"
+        "revision" : "c211079c200ce2c5f68160bf75ded005b1c945f1"
       }
     },
     {

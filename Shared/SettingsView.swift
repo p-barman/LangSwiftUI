@@ -20,6 +20,8 @@ struct SettingsView: View {
     
     var body: some View {
             List {
+                userProfile
+                switchPlatforms
                 flagComment
             }
             .navigationTitle("Settings")
@@ -37,7 +39,7 @@ struct SettingsView: View {
         }
     
     var flagComment: some View {
-        Section {
+        Section(header: Text("Report Content")) {
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $user_report_text)
                     .frame(height: 100)
@@ -85,6 +87,55 @@ struct SettingsView: View {
         }
     }
     
+    var userProfile: some View {
+        HStack {
+            Image(systemName: "person.crop.circle").resizable()
+                .frame(width: 50, height: 50).foregroundColor(.blue)
+                
+            VStack(alignment: .leading) {
+                Text("Blake Nielsen").font(.title2)
+                Text("0x2845674dfuygh7g45F87").font(.system(size: 12))
+            }.padding(.leading)
+        }
+    }
+    
+    
+    var switchPlatforms: some View {
+        Section(header: Text("Switch Platforms")) {
+            HStack {
+                panelDetails(iconColor: .blue, iconName: "message.fill")
+                Text("iMessage")
+                Spacer()
+                Image(systemName: "chevron.right")
+            }
+            .onTapGesture {
+                let message = "Hey u!"
+                let sms: String = "sms:cryptoai@imsg.chat&body=\(message)"
+                let strURL: String = sms.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                if let url = URL(string: strURL) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            }
+
+            HStack {
+                panelDetails(iconColor: .green, iconName: "message.fill")
+                Text("SMS")
+                Spacer()
+                Image(systemName: "chevron.right")
+            }
+            .onTapGesture {
+                let message = "Hey u!"
+                let sms: String = "sms:+15128976483&body=\(message)"
+                let strURL: String = sms.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                if let url = URL(string: strURL) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            }
+
+        }
+    }
+    
+    
     
     struct SimpleData: Codable {
         let text: String
@@ -127,7 +178,20 @@ struct SettingsViewButton: View {
 }
 
 
-
+struct panelDetails: View {
+    
+    let iconColor: Color
+    let iconName: String
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 4).fill(iconColor)
+                .frame(width: 20, height: 20)
+            Image(systemName: iconName).foregroundColor(.white).imageScale(.small)
+        }
+    }
+    
+}
 
 
 

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class MessageRow: ObservableObject, Identifiable, Equatable {
     
@@ -13,8 +14,19 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
     @Published var isInteractingwithModel: Bool
     
     func updateResponseText(text: String) {
-        self.responseText += text
-    }
+            self.responseText += text
+            
+            // Detect URLs and update the attributed string
+            let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+            let matches = detector?.matches(in: self.responseText, options: [], range: NSRange(location: 0, length: self.responseText.utf16.count))
+
+            let attributedText = NSMutableAttributedString(string: self.responseText)
+            for match in matches ?? [] {
+                guard let range = Range(match.range, in: self.responseText) else { continue }
+                attributedText.addAttribute(.link, value: self.responseText[range], range: match.range)
+            }
+            self.attributedResponseText = attributedText
+        }
 
     func toggleInteractingWithModel(isInteracting: Bool) {
         self.isInteractingwithModel = isInteracting
@@ -27,6 +39,7 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
 
     let responseImage: String
     @Published var responseText: String
+    @Published var attributedResponseText: NSAttributedString? // for links and url clickablity
 
     var responseError: String?
     
@@ -44,6 +57,7 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
         self.responseText = responseText
         self.responseError = responseError
         self.isFromUser = isFromUser
+        self.attributedResponseText = NSAttributedString(string: responseText)
     }
     // Add an initializer if necessary...
 }
