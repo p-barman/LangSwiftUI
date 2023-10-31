@@ -27,8 +27,9 @@ struct PersistentUserState {
 }
 
 
+
 struct Constants {
-    static let environment: Environment = .dev // change to .prod when needed
+    static let environment: Environment = .prod // change to .prod when needed
     
     enum Environment {
         case dev
@@ -140,5 +141,34 @@ struct AgreeToTermsView: View {
         
         .cornerRadius(10)
         .shadow(radius: 5)
+    }
+}
+
+
+class PaywallManager: ObservableObject {
+
+    @Published var shouldShowPaywall: Bool = false
+    
+    private static let MessagesSentKey = "expl_user_messages_sent_key"
+    private let userDefaults = UserDefaults.standard
+    
+    var messagesSent: Int {
+        get {
+            return userDefaults.integer(forKey: PaywallManager.MessagesSentKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: PaywallManager.MessagesSentKey)
+            checkForPaywall()
+        }
+    }
+
+    init() {
+        checkForPaywall()  // Check on init so that it has the right value from the beginning
+    }
+
+    private func checkForPaywall() {
+        if messagesSent > 2 {
+            shouldShowPaywall = true
+        }
     }
 }

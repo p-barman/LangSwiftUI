@@ -27,10 +27,12 @@ import Adapty
 struct ChatApp: App {
     
     @StateObject var userStateModel = UserStateModel()
+    @StateObject var paywallManager = PaywallManager()
+
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    @State private var isPaywallPresented: Bool = false
+    @State private var isPaywallPresented: Bool = true
     @State var showTerms : Bool = !UserDefaults.standard.bool(forKey: "agreedToTerms")
     
     init() {
@@ -41,13 +43,13 @@ struct ChatApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if isPaywallPresented {
+            if paywallManager.shouldShowPaywall {
                 Paywall(isPaywallPresented: $isPaywallPresented)
             } else {
 //                // ContentView or whatever you want to show when the paywall is dismissed
 //                ContentView()
 //            }
-            ContentView()
+            ContentView(paywallManager: paywallManager)
                 .sheet(isPresented: $showTerms ) {
                     GeometryReader { geometry in
                         AgreeToTermsView(isPresented: $showTerms)

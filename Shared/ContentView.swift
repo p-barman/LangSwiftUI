@@ -13,19 +13,19 @@ struct ContentView: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.requestReview) var requestReview
-    @ObservedObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY"))
-
-//    @StateObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY"))
-//    @StateObject var websocketVM = WebSocketViewModel.websocketVMweb
+    @ObservedObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY")) // ARE WE USING THIS??????
+    @ObservedObject var paywallManager: PaywallManager
 
     @State private var showSettingsView: Bool = false
 
     @FocusState var isTextFieldFocused: Bool
     
     
+    
     var body: some View {
         
         NavigationView {
+//            Divider()
             chatListView
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
@@ -164,6 +164,7 @@ struct ContentView: View {
                         scrollToBottom(proxy: proxy) // helps scrolling to the last message
                         //send the message
                         await vm.sendTapped()
+                        paywallManager.messagesSent += 1
                     }
                 } label: {
                     Image(systemName: "paperplane.circle.fill")
@@ -178,84 +179,19 @@ struct ContentView: View {
                 
         }
     }
-            //        }
-            //        HStack(alignment: .top, spacing: 8) {
-            //            if image.hasPrefix("http"), let url = URL(string: image) {
-            //                AsyncImage(url: url) { image in
-            //                    image
-            //                        .resizable()
-            //                        .frame(width: 30, height: 30)
-            //                } placeholder: {
-            //                    ProgressView()
-            //                }
-            //
-            //            } else {
-            //                Image(image)
-            //                    .resizable()
-            //                    .frame(width: 30, height: 30)
-            //            }
-            //            TextField("Send Message", text: $vm.inputMessage, axis: .vertical)
-            //                .textFieldStyle(.roundedBorder)
-            //                .focused($isTextFieldFocused)
-            //                .disabled(vm.isInteractingwithModel)
-            //
-            //            if vm.isInteractingwithModel {
-            //                DotLoadingView().frame(width: 60, height:30)
-            //            } else {
-            //                Button {
-            //                    Task { @MainActor in
-            //                        isTextFieldFocused = false
-            //                        scrollToBottom(proxy: proxy) // helps scrolling to the last message
-            //                        //send the message
-            //                        await vm.sendTapped()
-            //                    }
-            //
-            //                } label: {
-            //                    Image(systemName: "paperplane.circle.fill")
-            //                        .rotationEffect(.degrees(45))
-            //                        .font(.system(size:30))
-            //                }
-            //                .disabled(vm.inputMessage
-            //                    .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            //            }
-            ////            TextField("Send message", text: "", axis: .vertical)
-            ////               is Carly bar model.autocorrectionDisabled()
-            //        }
-            //        .padding(.horizontal, 16)
-            //        .padding(.top, 12)
-            //    }
+
         
     private func scrollToBottom(proxy: ScrollViewProxy) {
         guard let id = vm.messages.last?.id else { return }
         proxy.scrollTo(id, anchor: .bottomTrailing)
     }
+    
+    
+ 
 }
-//    var body: some View {
-//        VStack {
-//            Image(systemName: "globe")
-//                .imageScale(.large)
-//                .foregroundColor(.accentColor)
-//            Text("Hello World")
-//        }
-//        .padding()
-//        .onAppear{
-//            Task{
-//                let api = ChatUAPI(apiKey: "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")
-//                do {
-//                    let stream = try await api.sendMessageStream(text: "Who is James Bond?")
-//                    for try await line in stream {
-//                        print(line)
-//                    }
-////                    let text = try await api.sendMessage("who is James Bond?")
-////                    print(text)
-//                } catch {
-//                    print(error.localizedDescription)
-//                    print(error)
-//                }
-//            }
-//
-//        }
-//    }
+
+
+
 
 // for settings view or chatlist View navigationLink
 
@@ -288,8 +224,8 @@ struct TypingText: View {
 }
 
 
-struct ContentView_previews: PreviewProvider {
-    static var previews: some View {
-        ContentView( vm: ViewModel(api: ChatUAPI(apiKey: "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")))
-    }
-}
+//struct ContentView_previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView( vm: ViewModel(api: ChatUAPI(apiKey: "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")))
+//    }
+//}
