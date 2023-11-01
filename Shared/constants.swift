@@ -29,7 +29,7 @@ struct PersistentUserState {
 
 
 struct Constants {
-    static let environment: Environment = .prod // change to .prod when needed
+    static let environment: Environment = .dev// change to .prod when needed
     
     enum Environment {
         case dev
@@ -148,26 +148,38 @@ struct AgreeToTermsView: View {
 class PaywallManager: ObservableObject {
 
     @Published var shouldShowPaywall: Bool = false
-    
-    private static let MessagesSentKey = "expl_user_messages_sent_key"
+    @Published var max: Int = 10 // todo make dependent on dev v prod?
+    private static let MessagesSentKey = PersistentUserState.userIdentifier!
     private let userDefaults = UserDefaults.standard
     
     var messagesSent: Int {
         get {
             return userDefaults.integer(forKey: PaywallManager.MessagesSentKey)
         }
-        set {
-            userDefaults.setValue(newValue, forKey: PaywallManager.MessagesSentKey)
-            checkForPaywall()
+        set { //do in background
+            DispatchQueue.global(qos: .background).async {
+                self.userDefaults.setValue(newValue, forKey: PaywallManager.MessagesSentKey)
+                self.userDefaults.synchronize()
+                DispatchQueue.main.async {
+                    self.checkForPaywall()
+                }
+            }
         }
     }
 
     init() {
         checkForPaywall()  // Check on init so that it has the right value from the beginning
     }
+    
+    func incrementMax() {
+            print("increamenting max messages from ", max, "to ", (max + 10))
+            max += 10
+            checkForPaywall()
+        }
 
     private func checkForPaywall() {
-        if messagesSent > 2 {
+        if messagesSent > max {
+            print("showing paywall ", "messages sent: ", messagesSent, "current max: ", max)
             shouldShowPaywall = true
         }
     }

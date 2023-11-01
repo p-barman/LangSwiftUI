@@ -12,10 +12,14 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
 
     @Published var isInteractingwithModel: Bool
     let id = UUID()
+    
+    @Published var imageUrl: String?
+    @Published var imageData: Data?
+
 
     let sendImage: String
     let sendText: String
-    var imageUrl: String?
+ 
     let responseImage: String
     @Published var responseText: String
     @Published var attributedResponseText: NSAttributedString? // for links and url clickablity
@@ -49,16 +53,18 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
             return lhs.id == rhs.id
         }
     
-    init(isFromUser: Bool, isInteractingwithModel: Bool, sendImage: String, sendText: String, responseImage: String, responseText: String, imageUrl: String? = nil, responseError: String? = nil) {
+    init(isFromUser: Bool, isInteractingwithModel: Bool, sendImage: String, sendText: String, responseImage: String, responseText: String, imageUrl: String? = nil, imageData: Data? = nil, responseError: String? = nil) {
         self.isInteractingwithModel = isInteractingwithModel
         self.sendImage = sendImage
         self.sendText = sendText
         self.responseImage = responseImage
         self.responseText = responseText
         self.imageUrl = imageUrl
+        self.imageData = imageData
         self.responseError = responseError
         self.isFromUser = isFromUser
         self.attributedResponseText = NSAttributedString(string: responseText)
+        
     }
 
     // Add an initializer if necessary...

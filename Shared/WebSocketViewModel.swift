@@ -14,8 +14,14 @@ class WebSocketViewModel: ObservableObject {
     private var urlSession: URLSession
     private let urlString: String
     var onMessageReceived: ((WebsocketMessageData) -> Void)?
-
     
+    private var unsentMessage: String?
+
+    private var reconnectionDelay: TimeInterval = 1.0 // Starts with a 1 second delay
+    private let maxReconnectionDelay: TimeInterval = 64.0 // Maximum delay is 64 seconds
+    private let maxReconnectionAttempts = 5 // Adjust this value as necessary
+    private var currentReconnectionAttempts = 0
+
 //    @Published var messageReceived = ""
     
     init(url: String) {
@@ -57,9 +63,15 @@ class WebSocketViewModel: ObservableObject {
             print("Invalid URL")
             return
         }
+        
 
         webSocketTask = urlSession.webSocketTask(with: url)
         webSocketTask?.resume()
+        
+        if let message = unsentMessage {
+            send(message: message)
+            unsentMessage = nil  // Clear the stored message after resending
+        }
 
         receiveMessage()
     }
@@ -67,13 +79,36 @@ class WebSocketViewModel: ObservableObject {
     func disconnect() {
         webSocketTask?.cancel(with: .normalClosure, reason: nil)
     }
+
+    private func attemptReconnection() {
+        if currentReconnectionAttempts < maxReconnectionAttempts {
+            DispatchQueue.global().asyncAfter(deadline: .now() + reconnectionDelay) { [weak self] in
+                self?.connect()
+            }
+
+            reconnectionDelay = min(reconnectionDelay * 2, maxReconnectionDelay)
+            currentReconnectionAttempts += 1
+        } else {
+            print("Max reconnection attempts reached. Please check your network and try again.")
+        }
+    }
     
     func send(message: String) {
-        webSocketTask?.send(.string(message)) { error in
-            if let error = error {
-                print("Error sending message: \(error)")
+        webSocketTask?.send(.string(message)) { [weak self] error in
+                if let error = error {
+                    print("Error sending message: \(error)")
+                    
+                    if (error as NSError).domain == "NSPOSIXErrorDomain" && (error as NSError).code == 57 {
+                        print("Socket not connected. Attempting to reconnect...")
+                        
+                        // Store the message for retry only in case of an error
+                        self?.unsentMessage = message
+
+                        self?.attemptReconnection()
+                    }
+                }
             }
-        }
+
     }
     
     private func receiveMessage() {
@@ -82,14 +117,21 @@ class WebSocketViewModel: ObservableObject {
             case .success(let message):
                 switch message {
                 case .string(let text):
-                    // Decode the received string into WebsocketMessageData
-                    if let data = text.data(using: .utf8),
-                       let messageData = try? JSONDecoder().decode(WebsocketMessageData.self, from: data) {
-                        DispatchQueue.main.async {
-                            self?.handleMessageData(messageData)
+                    if let doubleEncodedData = text.data(using: .utf8),
+                       let singleEncodedJsonString = String(data: doubleEncodedData, encoding: .utf8),
+                       let jsonData = singleEncodedJsonString.data(using: .utf8) {
+                        
+                        do {
+                            let messageData = try JSONDecoder().decode(WebsocketMessageData.self, from: jsonData)
+                            DispatchQueue.main.async {
+                                self?.handleMessageData(messageData)
+                            }
+                        } catch {
+                            print("Decoding error: \(error)")
                         }
+                        
                     } else {
-                        print("Error decoding message data")
+                        print("Error converting text to data")
                     }
                 default:
                     print("Received unhandled message type")
@@ -97,34 +139,36 @@ class WebSocketViewModel: ObservableObject {
 
                 // Continue listening for the next message
                 self?.receiveMessage()
+
             case .failure(let error):
                 print("Error receiving message: \(error)")
-
                 // Handle the error and decide if we need to reconnect
                 self?.handleError(error)
             }
         }
     }
-    private func handleError(_ error: Error) {
-        // Here, you can add more refined error checks.
-        // For demonstration purposes, I'll just use a generic error check.
 
+
+
+
+
+
+
+    private func handleError(_ error: Error) {
         if let urlError = error as? URLError {
             switch urlError.code {
-            case .notConnectedToInternet, .networkConnectionLost, .timedOut:
-                // For these types of errors, attempt a reconnection after a delay
-                DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
-                    self.connect()
-                }
+            case .notConnectedToInternet, .networkConnectionLost, .timedOut, .cannotConnectToHost:
+                attemptReconnection()
             default:
-                // For other types of errors, decide if you need to reconnect or handle differently
                 print("Received an error that doesn't warrant reconnection: \(urlError.localizedDescription)")
             }
+        } else if error.localizedDescription.contains("Socket is not connected") || error.localizedDescription.contains("Could not connect to the server.") {
+            // Handle socket not connected error
+            attemptReconnection()
         } else {
-            print("Received a non-URL error: \(error.localizedDescription)")
+            print("Received a non-URL error: \(error.localizedDescription) \(error)")
         }
     }
-    
     private func handleMessageData(_ messageData: WebsocketMessageData) {
         var messageType = messageData.message_type
 
@@ -136,11 +180,24 @@ class WebSocketViewModel: ObservableObject {
         switch messageType {
             case .text:
                 // Handle text
-                self.onMessageReceived?(messageData)
+                self.onMessageReceived?(messageData) // this calls webSocketVM.onMessageReceived
 
             case .image:
-                
-                break
+                if let imageUrl = messageData.url {
+                              // Create a new MessageRow with the image URL and add to your messages array.
+                              let newMessage = MessageRow(isFromUser: false, isInteractingwithModel: false, sendImage: "", sendText: "", responseImage: "", responseText: "", imageUrl: imageUrl)
+                              // Append newMessage to your messages array or use onMessageReceived callback to handle it externally.
+//                              self.onMessageReceived?(newMessage)
+                          }
+               //image with text:
+                if let text = messageData.text {
+                    if Bool(text) != false {
+                        self.onMessageReceived?(messageData)
+                    }
+                   
+                }
+               
+//                break
                 // Handle image
                 // Depending on the data type, you can load the image from a URL, bytes, or file
                 // Then display it using SwiftUI's Image view or other methods

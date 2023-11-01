@@ -9,8 +9,18 @@ import SwiftUI
 import AVKit
 
 class ViewModel: ObservableObject {
-    
-    @Published var isInteractingWithModel = false
+    var resetTimer: Timer?
+    @Published var isInteractingWithModel = false {
+        didSet {
+            if isInteractingWithModel {
+                startResetTimer()
+            } else {
+                resetTimer?.invalidate()
+                resetTimer = nil
+            }
+        }
+    }
+
     @Published var messages: [MessageRow] = []{
         didSet {
             print("Messages updated:", messages)
@@ -38,12 +48,9 @@ class ViewModel: ObservableObject {
     //    @State messageRow: MessageRow()
     
     private let api: ChatUAPI
-    
     func clearChat() {
         messages.removeAll()
     }
-    
-    
     init(api: ChatUAPI) {
         self.api = api
         self.webSocketVM.connect()
@@ -90,9 +97,23 @@ class ViewModel: ObservableObject {
             }
         } catch {
             print("Error fetching questions:", error)
+            isInteractingWithModel = false // reset here?
         }
     }
     
+    func addImageRow(isFromUser: Bool, imageUrl: String? = nil, imageData: Data? = nil) {
+            let row = MessageRow(
+                isFromUser: isFromUser,
+                isInteractingwithModel: !isFromUser,
+                sendImage: isFromUser ? "profile" : "langicon",
+                sendText: "",
+                responseImage: isFromUser ? "" : "langicon",
+                responseText: ""
+            )
+            row.imageUrl = imageUrl
+            row.imageData = imageData
+            self.messages.append(row)
+        }
     
     @MainActor
     private func send(text: String) async {
@@ -144,19 +165,30 @@ class ViewModel: ObservableObject {
         let currentIndex = messages.count - 1
         
         // Define the response handling mechanism
+        // ONLY FOR TEXT !?
+      
         webSocketVM.onMessageReceived = { [weak self] message in
             DispatchQueue.main.async {
+                
                 self?.isInteractingWithModel = false
                 if let strongSelf = self, currentIndex < strongSelf.messages.count {
-                    // Update the corresponding message with the received response
-                    //                    if let data = message.data(using: .utf8),
-                    //                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                    //                       let text = json["text"] as? Strin zx
-                    
-                    // if message type =
-                    let text = message.text
-                    strongSelf.messages[currentIndex].updateResponseText(text: text ?? "")
-                    strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                    if message.message_type?.rawValue ?? "text" == "image" {
+                        if let imageUrl = message.url {
+                                strongSelf.messages[currentIndex].imageUrl = imageUrl
+                            }
+                        
+                    }
+                    else {
+                        // Update the corresponding message with the received response
+                        //                    if let data = message.data(using: .utf8),
+                        //                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                        //                       let text = json["text"] as? Strin zx
+                        
+                        // if message type =
+                        let text = message.text
+                        strongSelf.messages[currentIndex].updateResponseText(text: text ?? "")
+                        strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                    }
                     
                     if let isEndOfStream = message.end_of_stream as? Bool, isEndOfStream {
                         
@@ -167,6 +199,17 @@ class ViewModel: ObservableObject {
                         
                     }
                 }
+            }
+        }
+    }
+    private func startResetTimer() {
+        // Invalidate any existing timer
+        resetTimer?.invalidate()
+        
+        // Start a new timer
+        resetTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.isInteractingWithModel = false
             }
         }
     }

@@ -12,14 +12,11 @@ struct SettingsView: View {
     
     @Binding var showSettings: Bool
     @ObservedObject var viewModel: ViewModel
-    
     @State private var user_report_text: String = ""
     @FocusState var isFocused: Bool
     @State private var showAlert: Bool = false
     @State private var userName: String = "your profile"
 
-    
-    
     var body: some View {
             List {
                 userProfile

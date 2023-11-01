@@ -25,6 +25,7 @@ struct MessageRowView: View {
         
             else {
                 LangMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel || message.responseText.isEmpty)
+                    .id(UUID()) // force redraw?
                     .frame(maxWidth: .infinity, alignment: .leading) // Server on the RIGHT
             }
         }

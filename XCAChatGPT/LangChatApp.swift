@@ -9,27 +9,12 @@ import Foundation
 import SwiftUI
 import Adapty
 
-
-//@main
-//struct ChatApp: App {
-//
-//    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-//
-//    var body: some Scene {
-//        WindowGroup {
-////            ContentView()
-//            Paywall(isPaywallPresented: true)
-//        }
-//    }
-//}
-
 @main
 struct ChatApp: App {
     
     @StateObject var userStateModel = UserStateModel()
     @StateObject var paywallManager = PaywallManager()
 
-    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @State private var isPaywallPresented: Bool = true
@@ -43,8 +28,8 @@ struct ChatApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if paywallManager.shouldShowPaywall && userStateModel.isSubscriptionActive {
-                Paywall(isPaywallPresented: $isPaywallPresented)
+            if paywallManager.shouldShowPaywall && !userStateModel.isSubscriptionActive { // not active?!
+                Paywall(isPaywallPresented: $isPaywallPresented).environmentObject(paywallManager)
             } else {
 //                // ContentView or whatever you want to show when the paywall is dismissed
 //                ContentView()

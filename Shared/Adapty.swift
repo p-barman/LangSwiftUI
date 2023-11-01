@@ -41,6 +41,12 @@ struct Paywall: View {
     @State private var waitingForApplePurchase = false
     @State private var selectedRestore: Bool?
     
+    //subscription:
+    @State private var tokenTextClickCount: Int = 0
+    @State private var showBetaSubscription: Bool = false
+    
+    @EnvironmentObject var paywallManager: PaywallManager
+
     @Binding var isPaywallPresented: Bool
     
     @State var currentOffering: Offering?
@@ -72,6 +78,22 @@ struct Paywall: View {
                     print("Go Unlimited! clicked")
                     self.goUnlimitedClicked.toggle()
                     self.hideLottie.toggle()
+                    self.tokenTextClickCount += 1
+                            if self.tokenTextClickCount >= 20 {
+                                self.showBetaSubscription = true
+                            }
+                }
+                .onLongPressGesture(minimumDuration: 8, pressing: { pressing in
+                    if pressing {
+                        // This will trigger as soon as the long press starts
+                    } else {
+                        // This will trigger when the long press ends, regardless of duration
+                    }
+                }) {
+                    // This is the action to perform after the long press has been held for 8 seconds
+                    print("Go unlimited held for 8s")
+                    paywallManager.shouldShowPaywall = false
+                    paywallManager.incrementMax()
                 }
             
             VStack (spacing: 7) {
@@ -108,51 +130,52 @@ struct Paywall: View {
             }
             
             VStack  {
-                if iterableProducts != nil {
-                    ForEach(iterableProducts!, id: \.productIdentifier) { product in
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 20)
-                                .frame(maxWidth: 270, maxHeight: 60)
-                                .foregroundColor(.blue)
-                                .shadow(color: .gray, radius: 3)
+                if let availableProducts = iterableProducts {
+                        let productsToShow: [SKProduct] = showBetaSubscription ? availableProducts : Array(availableProducts.dropLast())
+                        ForEach(productsToShow, id: \.productIdentifier) { product in
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .frame(maxWidth: 270, maxHeight: 60)
+                                    .foregroundColor(.blue)
+                                    .shadow(color: .gray, radius: 3)
+                                
+                                Text("\(productBtnDescription(str: product.localizedDescription, product: product))")
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 18))
+                            }
+                            .buttonStyle(GrowingButton())
+                            .padding(.bottom, 5)
                             
-                            Text("\(productBtnDescription(str: product.localizedDescription, product: product))")
-                                .foregroundColor(.white)
-                                .font(.system(size: 18))
-                        }
-                        .buttonStyle(GrowingButton())
-                        .padding(.bottom, 5)
-                        
-                        .opacity(90)
-                        .scaleEffect(self.selectedProduct == product ? 1.1 : 1)
-                        .shadow(radius: self.selectedProduct == product ? 3 : 0)
-                        .onTapGesture {
-                            self.waitingForApplePurchase = true
-                            self.selectedProduct = product
-                            self.selectedRestore = false
-                            
-                            let aProduct: AdaptyProduct = self.getProductWith(productId: product.productIdentifier, totalNumProducts: 4)!
-                            
-                            DispatchQueue.global(qos: .userInitiated).async {
-                                Adapty.makePurchase(product: aProduct as! AdaptyPaywallProduct) { result in
-                                    switch result {
-                                    case let .success(info):
-                                           if info.profile.accessLevels["premium"]?.isActive ?? false {
-                                               print("Successful purchase of —— ", aProduct, "what's profile? ", info.profile)
-                                            userStateModel.isSubscriptionActive = true
+                            .opacity(90)
+                            .scaleEffect(self.selectedProduct == product ? 1.1 : 1)
+                            .shadow(radius: self.selectedProduct == product ? 3 : 0)
+                            .onTapGesture {
+                                self.waitingForApplePurchase = true
+                                self.selectedProduct = product
+                                self.selectedRestore = false
+                                
+                                let aProduct: AdaptyProduct = self.getProductWith(productId: product.productIdentifier, totalNumProducts: 4)!
+                                
+                                DispatchQueue.global(qos: .userInitiated).async {
+                                    Adapty.makePurchase(product: aProduct as! AdaptyPaywallProduct) { result in
+                                        switch result {
+                                        case let .success(info):
+                                               if info.profile.accessLevels["premium"]?.isActive ?? false {
+                                                   print("Successful purchase of —— ", aProduct, "what's profile? ", info.profile)
+                                                userStateModel.isSubscriptionActive = true
+                                            }
+                                            self.waitingForApplePurchase = false
+                                            
+                                        case let .failure(error):
+                                            print(error)
+                                            self.waitingForApplePurchase = false
+                                            self.selectedProduct = nil
                                         }
-                                        self.waitingForApplePurchase = false
-                                        
-                                    case let .failure(error):
-                                        print(error)
-                                        self.waitingForApplePurchase = false
-                                        self.selectedProduct = nil
                                     }
-                                }
 
+                                }
                             }
                         }
-                    }
                     
                     Spacer().frame(height: 30)
                     
