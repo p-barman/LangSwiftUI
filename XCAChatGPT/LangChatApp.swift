@@ -9,6 +9,12 @@ import Foundation
 import SwiftUI
 import Adapty
 
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
 @main
 struct ChatApp: App {
     

@@ -27,7 +27,6 @@ class ViewModel: ObservableObject {
         }
     }
     @Published var isEndOfStream: Bool = false
-    
     @Published var inputMessage: String = ""
     @Published var webSocketVM = WebSocketViewModel(url: Constants.webSocketURL)
     
@@ -45,14 +44,13 @@ class ViewModel: ObservableObject {
             }
         }
     }
-    //    @State messageRow: MessageRow()
-    
-    private let api: ChatUAPI
+
+//    private let api: ChatUAPI
     func clearChat() {
         messages.removeAll()
     }
-    init(api: ChatUAPI) {
-        self.api = api
+    init() {
+//        self.api = api
         self.webSocketVM.connect()
         
     }
@@ -100,7 +98,8 @@ class ViewModel: ObservableObject {
             isInteractingWithModel = false // reset here?
         }
     }
-    
+   
+    @MainActor
     func addImageRow(isFromUser: Bool, imageUrl: String? = nil, imageData: Data? = nil) {
             let row = MessageRow(
                 isFromUser: isFromUser,
@@ -122,9 +121,9 @@ class ViewModel: ObservableObject {
         // Construct the message object
         let webSocketMessage = WebSocketMessageOut(
             text: text,
-            user_secret: "secret",
+            user_secret: "secret-boopalo",
             user_identifier: PersistentUserState.userIdentifier ?? "default_userid",
-            msg_id: "1241"
+            msg_id: UUID().uuidString
         )
         
         // Convert the message object to JSON and send
@@ -137,6 +136,7 @@ class ViewModel: ObservableObject {
             print("Failed to encode WebSocketMessage:", error)
         }
         
+     
         // Initialize the message row for the outgoing (user) message
         let userMessageRow = MessageRow(
             isFromUser: true,
@@ -148,7 +148,44 @@ class ViewModel: ObservableObject {
         )
         self.messages.append(userMessageRow)
         
-        // Initialize the message row for the Lang  response
+
+        
+        // Capture the current message index for later use (Lang's index)
+       
+        
+        // Define the response handling mechanism
+        // ONLY FOR TEXT !?
+        
+        
+        webSocketVM.onImageReceived = { [weak self] (message: WebsocketMessageData) in
+            DispatchQueue.main.async {
+                guard let strongSelf = self else { return }
+                
+                // Ensure 'imageUrl' is taken from the 'message' object or some other source.
+                let imageUrl : String = message.url ?? "profile.png" // Assuming `url` is a property in WebSocketMessageIn
+
+                let langImageRow = MessageRow(
+                    isFromUser: false,
+                    isInteractingwithModel: false,
+                    sendImage: "",
+                    sendText: "",
+                    responseImage: "",
+                    responseText: "",
+                    imageUrl: imageUrl
+                )
+                strongSelf.messages.append(langImageRow)
+                let currentIndex = strongSelf.messages.count - 1
+                
+                if currentIndex < strongSelf.messages.count {
+                    strongSelf.isInteractingWithModel = false
+                    if let isEndOfStream = message.end_of_stream as? Bool, isEndOfStream {
+                        strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
+                        strongSelf.isEndOfStream = isEndOfStream
+                    }
+                }
+            }
+        }
+        
         var langMessageRow = MessageRow(
             isFromUser: false,
             isInteractingwithModel: true,
@@ -158,27 +195,27 @@ class ViewModel: ObservableObject {
             responseText: ""
         )
         self.messages.append(langMessageRow)
-        
-        
-        
-        // Capture the current message index for later use (Lang's index)
-        let currentIndex = messages.count - 1
-        
-        // Define the response handling mechanism
-        // ONLY FOR TEXT !?
+
+
       
         webSocketVM.onMessageReceived = { [weak self] message in
             DispatchQueue.main.async {
+                guard let strongSelf = self else { return }
+
+                // Initialize the message row for the Lang  response
+//                strongSelf.messages.append(langMessageRow)
                 
                 self?.isInteractingWithModel = false
+                
+                let currentIndex = strongSelf.messages.count - 1
                 if let strongSelf = self, currentIndex < strongSelf.messages.count {
-                    if message.message_type?.rawValue ?? "text" == "image" {
-                        if let imageUrl = message.url {
-                                strongSelf.messages[currentIndex].imageUrl = imageUrl
-                            }
-                        
-                    }
-                    else {
+//                    if message.message_type?.rawValue ?? "text" == "image" {
+//                        if let imageUrl = message.url {
+//                                strongSelf.messages[currentIndex].imageUrl = imageUrl
+//                            }
+//                        
+//                    }
+//                    else {
                         // Update the corresponding message with the received response
                         //                    if let data = message.data(using: .utf8),
                         //                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
@@ -188,7 +225,7 @@ class ViewModel: ObservableObject {
                         let text = message.text
                         strongSelf.messages[currentIndex].updateResponseText(text: text ?? "")
                         strongSelf.messages[currentIndex].toggleInteractingWithModel(isInteracting: false)
-                    }
+//                    }
                     
                     if let isEndOfStream = message.end_of_stream as? Bool, isEndOfStream {
                         
@@ -227,6 +264,7 @@ extension ViewModel {
         var user_secret: String
         var user_identifier: String
         var msg_id: String
+        var app_version: String = Constants.app_version
         // other properties if needed...
     }
 

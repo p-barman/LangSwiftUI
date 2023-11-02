@@ -41,6 +41,11 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
             self.attributedResponseText = attributedText
         }
     
+    
+    func updateImage(imageUrl: String) {
+        self.imageUrl = imageUrl
+        
+    }
 
     func toggleInteractingWithModel(isInteracting: Bool) {
         self.isInteractingwithModel = isInteracting

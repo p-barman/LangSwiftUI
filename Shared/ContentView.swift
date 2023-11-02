@@ -13,14 +13,13 @@ struct ContentView: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.requestReview) var requestReview
-    @ObservedObject var vm = ViewModel(api: ChatUAPI(apiKey: "PASS IN YOUR API KEY")) // ARE WE USING THIS??????
+    @ObservedObject var vm = ViewModel() // ARE WE USING THIS??????
     @ObservedObject var paywallManager: PaywallManager
 
     @State private var showSettingsView: Bool = false
 
     @FocusState var isTextFieldFocused: Bool
-    
-    
+
     
     var body: some View {
         
@@ -53,6 +52,7 @@ struct ContentView: View {
                     }
                 }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     
@@ -72,6 +72,9 @@ struct ContentView: View {
                                     .frame(width: 250, height: 150)
                             }
                             .frame(width: 150, height: 100)
+                            .onTapGesture {
+                                                       requestReview() // This will trigger the review request
+                                                   }
                         } else {
                             // Otherwise, display the messages
                             ForEach(vm.messages) { message in

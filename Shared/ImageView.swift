@@ -15,32 +15,46 @@ var completedApiCalls = [String: Data]()
 struct ImageView: View {
     @State var urlString: String?
     var body: some View {
-        if (urlString != "" && urlString != completedApiCallForUrl) {
-//            AsyncImage(url: URL(string: urlString!))
-            AsyncImage(url: URL(string: urlString!)) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } else if phase.error != nil {
-                    Text("error loading img.")
-                        .font(.system(size: 20))
-                        .scaledToFit()
-                } else {
-                    ProgressView()
+        Group {
+            if (urlString != "" && urlString != completedApiCallForUrl) {
+                AsyncImage(url: URL(string: urlString!)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(10)
+                            .shadow(color: .gray, radius: 5, x: 0, y: 4)
+                            .transition(.opacity) // Fade-in animation
+                            .animation(.easeInOut(duration: 0.5))
+                    case .failure(_):
+                        Text("error loading img.")
+                            .font(.system(size: 20))
+                            .scaledToFit()
+                            .padding(.leading, 10)
+                    @unknown default:
+                        ProgressView()
+                    }
                 }
             }
-//            .frame(width: 200, height: 200)
-        }
-        else if (urlString != "" && completedApiCalls[urlString!] != nil) {
-            Image(uiImage: image_w_existing_data) //not in use b/c image below is never called so completedApiCalls is never stored.
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        }
-        else {
-            EmptyView()
+            else if (urlString != "" && completedApiCalls[urlString!] != nil) {
+                Image(uiImage: image_w_existing_data)
+                    .resizable()
+                    .scaledToFit()
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 4)
+                    .transition(.opacity) // Fade-in animation
+                    .animation(.easeInOut(duration: 0.5))
+            }
+            else {
+                EmptyView()
+            }
         }
     }
+
+    // ... (the rest of your ImageView code remains unchanged)
+
+
     private var image: UIImage {
         do {
             let url = URL(string: urlString!)!

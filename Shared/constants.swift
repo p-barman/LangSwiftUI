@@ -7,6 +7,7 @@ struct PersistentUserState {
     
     // Key for the stored identifier
     private static let UserIdentifierKey = "expl_user_identifier_key"
+    private static let UserNameKey = "expl_user_name_key" // This is the new key for storing the user's name
     
     // Getter and Setter for the identifier
     static var userIdentifier: String? {
@@ -24,12 +25,22 @@ struct PersistentUserState {
             userDefaults.setValue(newValue, forKey: UserIdentifierKey)
         }
     }
+    // Getter and Setter for the user name
+        static var userName: String? {
+            get {
+                return userDefaults.string(forKey: UserNameKey)
+            }
+            set {
+                userDefaults.setValue(newValue, forKey: UserNameKey)
+            }
+        }
 }
 
 
 
 struct Constants {
-    static let environment: Environment = .dev// change to .prod when needed
+    static let environment: Environment = .prod// change to .prod when needed
+    static let app_version: String = "0.011"
     
     enum Environment {
         case dev
@@ -148,7 +159,7 @@ struct AgreeToTermsView: View {
 class PaywallManager: ObservableObject {
 
     @Published var shouldShowPaywall: Bool = false
-    @Published var max: Int = 10 // todo make dependent on dev v prod?
+    @Published var max: Int = 3 // todo make dependent on dev v prod?
     private static let MessagesSentKey = PersistentUserState.userIdentifier!
     private let userDefaults = UserDefaults.standard
     

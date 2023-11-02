@@ -13,29 +13,58 @@ struct SettingsView: View {
     @Binding var showSettings: Bool
     @ObservedObject var viewModel: ViewModel
     @State private var user_report_text: String = ""
+    @Environment(\.requestReview) var requestReview
     @FocusState var isFocused: Bool
     @State private var showAlert: Bool = false
-    @State private var userName: String = "your profile"
+//    @State private var userName: String = "your profile"
+    @State private var userName: String = PersistentUserState.userName ?? ""
+    @State private var animateHeart: Bool = false
 
     var body: some View {
-            List {
-                userProfile
-                switchPlatforms
-                flagComment
-            }
-            .navigationTitle("Settings")
-            .navigationBarItems(leading: Button(action: { // Add this
-                showSettings.toggle()
-            }) {
-                Image(systemName: "chevron.left")
-                    .foregroundColor(.blue)
-                Text("Back")
-                    .foregroundColor(.blue)
-            })
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Report Sent"), message: Text("Thank you for your feedback. We will review the report."), dismissButton: .default(Text("OK")))
+        GeometryReader { geometry in
+            ZStack {
+                List {
+                    userProfile
+                    switchPlatforms
+                    flagComment
+                    
+                }
+                .navigationTitle("Settings")
+                .navigationBarItems(leading: Button(action: {
+                    showSettings.toggle()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.blue)
+                    Text("Back")
+                        .foregroundColor(.blue)
+                })
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Report Sent"), message: Text("Thank you for your feedback. We will review the report."), dismissButton: .default(Text("OK")))
+                }
+//                Divider()
+//                Spacer(minLength: 10)
+                // Heart emoji button positioned outside the List
+                if animateHeart {
+                    Button(action: {
+                        requestReview()
+                    }) {
+                        Text("❤️")
+                            .font(.title)  // Adjusting to a smaller size
+                            .scaleEffect(0.5)  // Applying a scale effect
+                            .opacity(0.8)  // Change the opacity for a pulsating effect
+                            .animation(Animation.easeInOut(duration: 0.5), value: animateHeart)  // Pulsating animation
+                    }
+                    .padding(.bottom, 5) // Adjust the padding to position it closer to the bottom
+                        .padding(.trailing, 9) // Adjust padding to push it closer to the right edge
+                        .position(x: geometry.size.width - 50, y: geometry.size.height - 50)
+                }            }
+            .onAppear() {
+                animateHeart = true
             }
         }
+    }
+
+
     
     var flagComment: some View {
         Section(header: Text("Report Content")) {
@@ -87,28 +116,27 @@ struct SettingsView: View {
     }
     
     var userProfile: some View {
-        // Move @State declaration to the top level of SettingsView
-        
-        HStack {
-            Image(systemName: "person.crop.circle")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .foregroundColor(.blue)
-                
-            VStack(alignment: .leading) {
-                Text(self.userName)
+            HStack {
+                Image(systemName: "person.crop.circle")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.blue)
+                    
+                VStack(alignment: .leading) {
+                    // Binding the TextField to the userName state
+                    TextField("Enter your name", text: $userName, onCommit: {
+                        PersistentUserState.userName = userName
+                    })
                     .font(.title2)
-                    .foregroundColor(.black)
-                    .background(RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.gray, lineWidth: 1)
-                        .background(Color.white))
-                
-                Text(PersistentUserState.userIdentifier ?? "0x2845674dfuygh7g45F87").font(.system(size: 12))
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .padding(.bottom, 8)
+
+                    Text(PersistentUserState.userIdentifier ?? "0x2845674dfuygh7g45F87").font(.system(size: 12))
+                }
+                .padding(.leading)
             }
-            .padding(.leading)
+            .padding()
         }
-        .padding()
-    }
 
 
         
@@ -217,3 +245,8 @@ struct panelDetails: View {
 //        }
 //    }
 //}
+
+
+struct leaveReview {
+    
+}

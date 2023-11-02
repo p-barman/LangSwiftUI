@@ -14,6 +14,7 @@ class WebSocketViewModel: ObservableObject {
     private var urlSession: URLSession
     private let urlString: String
     var onMessageReceived: ((WebsocketMessageData) -> Void)?
+    var onImageReceived: ((WebsocketMessageData) -> Void)?
     
     private var unsentMessage: String?
 
@@ -98,7 +99,7 @@ class WebSocketViewModel: ObservableObject {
                 if let error = error {
                     print("Error sending message: \(error)")
                     
-                    if (error as NSError).domain == "NSPOSIXErrorDomain" && (error as NSError).code == 57 {
+                    if ((error as NSError).domain == "NSPOSIXErrorDomain" && (error as NSError).code == 57) || (error as NSError).code == 54 || (error as NSError).code == -1004 || (error as NSError).code == 1004 {
                         print("Socket not connected. Attempting to reconnect...")
                         
                         // Store the message for retry only in case of an error
@@ -106,9 +107,11 @@ class WebSocketViewModel: ObservableObject {
 
                         self?.attemptReconnection()
                     }
+                    else {
+                        print("this error is not an attempt-reconnection triggering error - may need to make it one")
+                    }
                 }
             }
-
     }
     
     private func receiveMessage() {
@@ -169,6 +172,8 @@ class WebSocketViewModel: ObservableObject {
             print("Received a non-URL error: \(error.localizedDescription) \(error)")
         }
     }
+    
+    
     private func handleMessageData(_ messageData: WebsocketMessageData) {
         var messageType = messageData.message_type
 
@@ -183,14 +188,11 @@ class WebSocketViewModel: ObservableObject {
                 self.onMessageReceived?(messageData) // this calls webSocketVM.onMessageReceived
 
             case .image:
-                if let imageUrl = messageData.url {
+
                               // Create a new MessageRow with the image URL and add to your messages array.
-                              let newMessage = MessageRow(isFromUser: false, isInteractingwithModel: false, sendImage: "", sendText: "", responseImage: "", responseText: "", imageUrl: imageUrl)
-                              // Append newMessage to your messages array or use onMessageReceived callback to handle it externally.
-//                              self.onMessageReceived?(newMessage)
-                          }
-               //image with text:
+                self.onImageReceived?(messageData)
                 if let text = messageData.text {
+                    print("DOES THIS WORK?")
                     if Bool(text) != false {
                         self.onMessageReceived?(messageData)
                     }

@@ -20,11 +20,11 @@ struct MessageRowView: View {
                     .frame(maxWidth: .infinity, alignment: .trailing) // User on the LEFT
             } 
             else if (message.imageUrl != nil){
-                LangMessageImage(url: message.imageUrl ?? "profile")
+                LangMessageImage(url: message.imageUrl ?? "profile", image: "langicon", response_image: message.imageUrl!, responseError: message.responseError, showDotLoading: message.isInteractingwithModel)
             }
         
-            else {
-                LangMessageRow(text: message.responseText ?? "", image: message.responseImage, responseError: message.responseError, showDotLoading: message.isInteractingwithModel || message.responseText.isEmpty)
+            else { //non image row
+                LangMessageRow(text: message.responseText ?? "", image:  "langicon", responseError: message.responseError, showDotLoading: message.isInteractingwithModel || message.responseText.isEmpty)
                     .id(UUID()) // force redraw?
                     .frame(maxWidth: .infinity, alignment: .leading) // Server on the RIGHT
             }
@@ -41,24 +41,32 @@ struct MessageRowView: View {
         //not image is the profile pic
         MessageRow(text: message.responseText, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: message.responseText.isEmpty)
     }
-    func LangMessageImage(url: String) -> some View {
-        ImageView(urlString: url)
+    func LangMessageImage(url: String, image: String, response_image: String, responseError: String? = nil, showDotLoading: Bool) -> some View {
+        MessageRow(text: message.responseText, response_image: response_image, image: image, bgColor: colorScheme == .light ? Color.gray.opacity(0.2) : Color.blue, responseError: responseError, showDotLoading: message.responseText.isEmpty)
         
     }
 
     
-    func MessageRow(text: String, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
+    func MessageRow(text: String, response_image: String? = nil, image: String, bgColor: Color, responseError: String? = nil, showDotLoading: Bool = false) -> some View {
         HStack(spacing: 12) {
             MessageImage(image: image)
                 .frame(width: 40, height: 40)
                 .clipShape(Circle())
+            if let imageResponse = response_image {
+                ImageView(urlString: imageResponse)
+             
+                    // Adjust frame as needed
+            }
+            else {
+                VStack(alignment: .leading, spacing: 6) {
+                    if text.isEmpty && showDotLoading && response_image == nil{
+                        DotLoadingView()
+                    } else {
+                        URLTextView(text: text, bgColor: bgColor)
+                    }
+            }
 
-            VStack(alignment: .leading, spacing: 6) {
-                if text.isEmpty && showDotLoading {
-                    DotLoadingView()
-                } else {
-                    URLTextView(text: text, bgColor: bgColor)
-                }
+               
 
                 if let error = responseError {
                     Text(error)
@@ -69,10 +77,6 @@ struct MessageRowView: View {
             }
         }
     }
-
-
-
-
 
 
 

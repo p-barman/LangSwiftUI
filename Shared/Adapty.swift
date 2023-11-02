@@ -40,6 +40,7 @@ struct Paywall: View {
     @State private var selectedProduct: SKProduct?
     @State private var waitingForApplePurchase = false
     @State private var selectedRestore: Bool?
+    @Environment(\.requestReview) var requestReview
     
     //subscription:
     @State private var tokenTextClickCount: Int = 0
@@ -83,7 +84,7 @@ struct Paywall: View {
                                 self.showBetaSubscription = true
                             }
                 }
-                .onLongPressGesture(minimumDuration: 8, pressing: { pressing in
+                .onLongPressGesture(minimumDuration: 6, pressing: { pressing in
                     if pressing {
                         // This will trigger as soon as the long press starts
                     } else {
@@ -94,6 +95,9 @@ struct Paywall: View {
                     print("Go unlimited held for 8s")
                     paywallManager.shouldShowPaywall = false
                     paywallManager.incrementMax()
+                    
+                    // Display the review request
+                    requestReview()
                 }
             
             VStack (spacing: 7) {
