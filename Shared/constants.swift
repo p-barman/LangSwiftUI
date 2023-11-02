@@ -39,7 +39,7 @@ struct PersistentUserState {
 
 
 struct Constants {
-    static let environment: Environment = .prod// change to .prod when needed
+    static let environment: Environment = .dev// change to .prod when needed
     static let app_version: String = "0.011"
     
     enum Environment {
@@ -117,7 +117,7 @@ struct AgreeToTermsView: View {
             HStack {
                // Text("(Read the")
                 Button(action: {
-                    if let url = URL(string: "https://doc-hosting.flycricket.io/chat-uncensored-end-user-licence-agreement-eula/4ff67351-cb16-4ff3-871d-8679a20b4f0d/privacy") {
+                    if let url = URL(string: "https://docs.google.com/document/u/1/d/e/2PACX-1vQnpEpthNFVto9C-7M741a4EtHWRjrAsOY98I728zCRg5Ix1CFP4VUr9HlCDJkmlziYg6fPB3jrdyed/pub") {
                         UIApplication.shared.open(url, options: [:], completionHandler: nil)
                     }
                     
