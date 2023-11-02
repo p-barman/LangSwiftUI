@@ -39,7 +39,7 @@ struct PersistentUserState {
 
 
 struct Constants {
-    static let environment: Environment = .dev// change to .prod when needed
+    static let environment: Environment = .prod// change to .prod when needed
     static let app_version: String = "0.011"
     
     enum Environment {
