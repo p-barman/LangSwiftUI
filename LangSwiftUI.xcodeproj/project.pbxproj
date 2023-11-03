@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -37,7 +37,6 @@
 		011D70B12AEC709F0068CFC0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B91C00A298AD09F0079AF26 /* Preview Assets.xcassets */; };
 		011D70B22AEC70A00068CFC0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B91C00A298AD09F0079AF26 /* Preview Assets.xcassets */; };
 		011D70B32AEC70A10068CFC0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B91C00A298AD09F0079AF26 /* Preview Assets.xcassets */; };
-		011D70B72AEC70BC0068CFC0 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D70922AEC5D400068CFC0 /* constants.swift */; };
 		011D70B82AEC70BF0068CFC0 /* Adapty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98569B2AE9CA8300ABAE9A /* Adapty.swift */; };
 		011D70B92AEC70BF0068CFC0 /* Adapty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98569B2AE9CA8300ABAE9A /* Adapty.swift */; };
 		011D70BA2AEC70C10068CFC0 /* Adapty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E98569B2AE9CA8300ABAE9A /* Adapty.swift */; };
@@ -381,7 +380,7 @@
 				};
 			};
 			buildConfigurationList = 8B91BFFB298AD09E0079AF26 /* Build configuration list for PBXProject "LangSwiftUI" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -510,7 +509,6 @@
 				011D70A42AEC70710068CFC0 /* DotLoadingView.swift in Sources */,
 				011D70982AEC6FB10068CFC0 /* SettingsView.swift in Sources */,
 				8B05761F298FBE0400A56C9A /* ChatGPTAPI.swift in Sources */,
-				011D70B72AEC70BC0068CFC0 /* constants.swift in Sources */,
 				011D70BB2AEC70C40068CFC0 /* LottieViewAnimation.swift in Sources */,
 				0173578A2AF1A9C300EFA082 /* ImageView.swift in Sources */,
 				011D709B2AEC70570068CFC0 /* ViewModel.swift in Sources */,
@@ -899,7 +897,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20231102;
+				CURRENT_PROJECT_VERSION = 202311041;
 				DEVELOPMENT_ASSET_PATHS = "\"XCAChatGPT/Preview Content\"";
 				DEVELOPMENT_TEAM = DW44ATLQ37;
 				ENABLE_PREVIEWS = YES;
@@ -936,7 +934,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20231102;
+				CURRENT_PROJECT_VERSION = 202311041;
 				DEVELOPMENT_ASSET_PATHS = "\"XCAChatGPT/Preview Content\"";
 				DEVELOPMENT_TEAM = DW44ATLQ37;
 				ENABLE_PREVIEWS = YES;
@@ -955,8 +953,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.12;
-				"MARKETING_VERSION[sdk=*]" = 0.12;
+				MARKETING_VERSION = 0.14;
+				"MARKETING_VERSION[sdk=*]" = 0.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.lang-ai";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
