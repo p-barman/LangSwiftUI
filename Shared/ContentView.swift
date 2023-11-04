@@ -24,8 +24,12 @@ struct ContentView: View {
     var body: some View {
         
         NavigationView {
-//            Divider()
-            chatListView
+            VStack {
+                Divider()
+                    .padding(.top, -50)
+                    .frame(height: 1)
+                chatListView
+            }
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
@@ -46,6 +50,7 @@ struct ContentView: View {
                     SettingsViewButton(showSettings: $showSettingsView)
                     }
                 )
+           
                 .fullScreenCover(isPresented: $showSettingsView) {
                     NavigationView {
                         SettingsView(showSettings: $showSettingsView, viewModel: vm)
@@ -68,6 +73,7 @@ struct ContentView: View {
                                     .resizable()
                                     .frame(maxWidth: 100, maxHeight: 100)
                                     .clipShape(Circle())
+                                    .padding(.top, 20)
                                 LottieView(name: "loading", loopMode: .loop)
                                     .frame(width: 250, height: 150)
                             }
@@ -75,6 +81,7 @@ struct ContentView: View {
                             .onTapGesture {
                                                        requestReview() // This will trigger the review request
                                                    }
+                            
                         } else {
                             // Otherwise, display the messages
                             ForEach(vm.messages) { message in
@@ -232,3 +239,5 @@ struct TypingText: View {
 //        ContentView( vm: ViewModel(api: ChatUAPI(apiKey: "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")))
 //    }
 //}
+
+

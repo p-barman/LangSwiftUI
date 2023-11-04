@@ -54,10 +54,24 @@ struct SettingsView: View {
                             .opacity(0.8)  // Change the opacity for a pulsating effect
                             .animation(Animation.easeInOut(duration: 0.5), value: animateHeart)  // Pulsating animation
                     }
-                    .padding(.bottom, 5) // Adjust the padding to position it closer to the bottom
+                    .padding(.bottom, 5) // position it closer to the bottom
                         .padding(.trailing, 9) // Adjust padding to push it closer to the right edge
                         .position(x: geometry.size.width - 50, y: geometry.size.height - 50)
                 }            }
+            .highPriorityGesture(
+                        DragGesture(minimumDistance: 50)
+                            .onEnded { value in
+                                let horizontalDistance = value.location.x - value.startLocation.x
+                                let verticalDistance = value.location.y - value.startLocation.y
+                                if horizontalDistance < 0 {
+                                    // Detected swipe from right to left
+                                    showSettings.toggle()
+                                } else if verticalDistance > 0 {
+                                    // Detected swipe from top to bottom
+                                    showSettings.toggle()
+                                }
+                            }
+                    )
             .onAppear() {
                 animateHeart = true
             }
@@ -116,6 +130,7 @@ struct SettingsView: View {
     }
     
     var userProfile: some View {
+        VStack {  // Wrap your HStack with a VStack
             HStack {
                 Image(systemName: "person.crop.circle")
                     .resizable()
@@ -125,7 +140,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading) {
                     // Binding the TextField to the userName state
                     TextField("Enter your name", text: $userName, onCommit: {
-                        PersistentUserState.userName = userName
+                        commitUserName()
                     })
                     .font(.title2)
                     .textFieldStyle(PlainTextFieldStyle())
@@ -136,7 +151,25 @@ struct SettingsView: View {
                 .padding(.leading)
             }
             .padding()
+            Spacer()  // Add a spacer to fill the remaining space
         }
+        .gesture(
+            TapGesture()
+                .onEnded { _ in
+                    commitUserName()
+                }
+        )
+    }
+
+    func commitUserName() {
+        PersistentUserState.userName = userName
+        hideKeyboard()
+    }
+
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
 
 
         

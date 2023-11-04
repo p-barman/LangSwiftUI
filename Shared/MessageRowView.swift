@@ -82,11 +82,13 @@ struct MessageRowView: View {
 
     func DotLoadingView() -> some View {
         HStack(spacing: 3) {
-            ForEach(0..<3) { _ in
-                Circle().frame(width: 6, height: 6).foregroundColor(.gray)
-            }
+            LottieView(name: "typing", loopMode: .loop)
+                .frame(width: 50, height: 100)  // Set the width and height of the LottieView
+            Spacer()  // This will push the LottieView to the left
         }
     }
+
+
 }
 
 struct MessageImage: View {
