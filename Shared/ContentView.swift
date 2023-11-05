@@ -25,11 +25,13 @@ struct ContentView: View {
         
         NavigationView {
             VStack {
-                Divider()
-                    .padding(.top, -50)
-                    .frame(height: 1)
-                chatListView
-            }
+                           if colorScheme == .light {
+                               Divider()
+                                   .padding(.top, -50)
+                                   .frame(height: 1)
+                           }
+                           chatListView
+                       }
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .principal) {

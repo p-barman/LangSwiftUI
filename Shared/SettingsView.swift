@@ -59,7 +59,7 @@ struct SettingsView: View {
                         .position(x: geometry.size.width - 50, y: geometry.size.height - 50)
                 }            }
             .highPriorityGesture(
-                        DragGesture(minimumDistance: 50)
+                        DragGesture(minimumDistance: 25)
                             .onEnded { value in
                                 let horizontalDistance = value.location.x - value.startLocation.x
                                 let verticalDistance = value.location.y - value.startLocation.y
