@@ -52,6 +52,10 @@
 		017357882AF1A9C300EFA082 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017357862AF1A9C300EFA082 /* ImageView.swift */; };
 		017357892AF1A9C300EFA082 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017357862AF1A9C300EFA082 /* ImageView.swift */; };
 		0173578A2AF1A9C300EFA082 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017357862AF1A9C300EFA082 /* ImageView.swift */; };
+		01D6AC292AF81829001111B0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6AC282AF81829001111B0 /* Utils.swift */; };
+		01D6AC2A2AF81829001111B0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6AC282AF81829001111B0 /* Utils.swift */; };
+		01D6AC2B2AF81829001111B0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6AC282AF81829001111B0 /* Utils.swift */; };
+		01D6AC2C2AF81829001111B0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6AC282AF81829001111B0 /* Utils.swift */; };
 		6E2831392AEB201200F92FCB /* LottieViewAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */; };
 		6E28313C2AEB206F00F92FCB /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6E28313B2AEB206F00F92FCB /* Lottie */; };
 		6E28314A2AED492C00F92FCB /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2831492AED492C00F92FCB /* RevenueCat */; };
@@ -122,6 +126,7 @@
 		011D70BE2AEC74080068CFC0 /* loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
 		017357862AF1A9C300EFA082 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		0173578B2AF1B29D00EFA082 /* LangSwiftUI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "LangSwiftUI-Info.plist"; sourceTree = "<group>"; };
+		01D6AC282AF81829001111B0 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		6E2831382AEB201200F92FCB /* LottieViewAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieViewAnimation.swift; sourceTree = "<group>"; };
 		6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		6E98568A2AD9DAC200ABAE9A /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
@@ -197,6 +202,7 @@
 				017357862AF1A9C300EFA082 /* ImageView.swift */,
 				6E98569B2AE9CA8300ABAE9A /* Adapty.swift */,
 				011D70922AEC5D400068CFC0 /* constants.swift */,
+				01D6AC282AF81829001111B0 /* Utils.swift */,
 				011D70BE2AEC74080068CFC0 /* loading.json */,
 				6EEF83032AF663AE00008940 /* typing.json */,
 				6E9856882AD9DA6A00ABAE9A /* ViewModel.swift */,
@@ -486,6 +492,7 @@
 				011D70992AEC70550068CFC0 /* ViewModel.swift in Sources */,
 				8B057593298E52D900A56C9A /* ChatGPTAPI.swift in Sources */,
 				011D709C2AEC70660068CFC0 /* MessageRow.swift in Sources */,
+				01D6AC2A2AF81829001111B0 /* Utils.swift in Sources */,
 				011D70BD2AEC70C60068CFC0 /* LottieViewAnimation.swift in Sources */,
 				017357882AF1A9C300EFA082 /* ImageView.swift in Sources */,
 				011D70962AEC6FAF0068CFC0 /* SettingsView.swift in Sources */,
@@ -508,6 +515,7 @@
 				011D709A2AEC70560068CFC0 /* ViewModel.swift in Sources */,
 				8B057605298FA9E900A56C9A /* ContentView.swift in Sources */,
 				011D709D2AEC70670068CFC0 /* MessageRow.swift in Sources */,
+				01D6AC2B2AF81829001111B0 /* Utils.swift in Sources */,
 				011D70BC2AEC70C50068CFC0 /* LottieViewAnimation.swift in Sources */,
 				017357892AF1A9C300EFA082 /* ImageView.swift in Sources */,
 				011D70972AEC6FB00068CFC0 /* SettingsView.swift in Sources */,
@@ -530,6 +538,7 @@
 				011D70982AEC6FB10068CFC0 /* SettingsView.swift in Sources */,
 				8B05761F298FBE0400A56C9A /* ChatGPTAPI.swift in Sources */,
 				011D70B72AEC70BC0068CFC0 /* constants.swift in Sources */,
+				01D6AC2C2AF81829001111B0 /* Utils.swift in Sources */,
 				011D70BB2AEC70C40068CFC0 /* LottieViewAnimation.swift in Sources */,
 				0173578A2AF1A9C300EFA082 /* ImageView.swift in Sources */,
 				011D709B2AEC70570068CFC0 /* ViewModel.swift in Sources */,
@@ -552,6 +561,7 @@
 				8B91C006298AD09E0079AF26 /* ContentView.swift in Sources */,
 				6E9856972AE9A82500ABAE9A /* SettingsView.swift in Sources */,
 				6E9856892AD9DA6A00ABAE9A /* ViewModel.swift in Sources */,
+				01D6AC292AF81829001111B0 /* Utils.swift in Sources */,
 				6E98568D2AD9DFB200ABAE9A /* DotLoadingView.swift in Sources */,
 				8B91C004298AD09E0079AF26 /* LangChatApp.swift in Sources */,
 				017357872AF1A9C300EFA082 /* ImageView.swift in Sources */,

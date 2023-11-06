@@ -168,51 +168,91 @@ struct MessageImage: View {
 //        // Implement UITextViewDelegate methods if needed
 //    }
 //}
-import SwiftUI
-import UIKit
-
 struct URLTextView: View {
     let text: String
     let bgColor: Color
 
-    var body: some View {
-        if let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue),
-           let match = detector.firstMatch(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count)),
-           let range = Range(match.range, in: text),
-           let url = URL(string: String(text[range])) {
-            
-            let urlText = text[range]
-            let preUrlText = text[text.startIndex..<range.lowerBound]
-            let postUrlText = text[range.upperBound..<text.endIndex]
+    private func processText() -> [(String, Bool)] {
+        var processedText = text
 
-            return AnyView(
-                VStack {
-                    Text(String(preUrlText))
-                        .font(.system(size: 16))
-                        .foregroundColor(bgColor == Color.blue ? .white : .primary)
-                    +
-                       Text(LocalizedStringKey(String(urlText)))
-                                .font(.system(size: 16))
-                                .foregroundColor(.blue)
-                                .underline()
-                    +
-                    Text(String(postUrlText))
+        // Regular expression to find Markdown link syntax with optional period
+        let markdownLinkRegex = "\\[([^\\[]+)\\]\\(([^)]+)\\)\\.?"
+
+        // Replace Markdown link syntax with just the URL and remove any trailing period
+        if let regex = try? NSRegularExpression(pattern: markdownLinkRegex, options: []) {
+            let nsString = NSString(string: text)
+            let matches = regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsString.length))
+
+            // Replace in reverse order to not mess up the indices
+            for match in matches.reversed() {
+                if match.numberOfRanges == 3 {
+                    let urlRange = match.range(at: 2) // Range of the URL
+                    let fullMatchRange = match.range(at: 0) // Range of the full Markdown link syntax including the period
+                    if let substringRange = Range(urlRange, in: text) {
+                        let url = String(text[substringRange])
+                        processedText = processedText.replacingOccurrences(of: nsString.substring(with: fullMatchRange), with: url)
+                    }
+                }
+            }
+        }
+
+        // Now that we've removed Markdown and potential trailing periods, we can find and process URLs as before
+        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
+            return [(processedText, false)]
+        }
+
+        let matches = detector.matches(in: processedText, options: [], range: NSRange(location: 0, length: processedText.utf16.count))
+        var segments: [(String, Bool)] = []
+        var lastIndex = processedText.startIndex
+
+        for match in matches {
+            guard let range = Range(match.range, in: processedText) else { continue }
+            let preRangeText = String(processedText[lastIndex..<range.lowerBound])
+            if !preRangeText.isEmpty {
+                segments.append((preRangeText, false))
+            }
+            let url = String(processedText[range])
+            segments.append((url, true))
+            lastIndex = range.upperBound
+        }
+
+        // Add any text after the last URL
+        let remainingText = String(processedText[lastIndex..<processedText.endIndex])
+        if !remainingText.isEmpty {
+            segments.append((remainingText, false))
+        }
+
+        return segments
+    }
+
+
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            ForEach(processText(), id: \.0) { segment in
+                if segment.1 {
+                    // This is a URL
+                    Link(destination: URL(string: segment.0)!) {
+                        Text(segment.0)
+                            .font(.system(size: 16))
+                            .foregroundColor(.blue)
+                            .underline()
+                    }
+                } else {
+                    // This is regular text
+                    Text(segment.0)
                         .font(.system(size: 16))
                         .foregroundColor(bgColor == Color.blue ? .white : .primary)
                 }
-            )
-        } else {
-            return AnyView(
-                Text(text)
-                    .font(.system(size: 16))
-                    .foregroundColor(bgColor == Color.blue ? .white : .primary)
-                    .padding(10)
-                    .background(bgColor)
-                    .cornerRadius(16)
-            )
+            }
         }
+        .padding(10)
+        .background(bgColor)
+        .cornerRadius(16)
     }
 }
+
+
 
 
 

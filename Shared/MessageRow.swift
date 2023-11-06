@@ -27,6 +27,7 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
     @Published var isFromUser: Bool
 
     func updateResponseText(text: String) {
+        if !(self.responseText == text) {
             self.responseText += text
             
             // Detect URLs and update the attributed string
@@ -40,6 +41,7 @@ class MessageRow: ObservableObject, Identifiable, Equatable {
             }
             self.attributedResponseText = attributedText
         }
+    }
     
     
     func updateImage(imageUrl: String) {

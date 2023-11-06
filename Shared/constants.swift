@@ -39,7 +39,7 @@ struct PersistentUserState {
 
 
 struct Constants {
-    static let environment: Environment = .prod// change to .prod when needed
+    static let environment: Environment = .dev// change to .prod when needed
     static let app_version: String = "0.011"
     
     enum Environment {
@@ -159,7 +159,7 @@ struct AgreeToTermsView: View {
 class PaywallManager: ObservableObject {
 
     @Published var shouldShowPaywall: Bool = false
-    @Published var max: Int = 3 // todo make dependent on dev v prod?
+    @Published var max: Int // todo make dependent on dev v prod?
     private static let MessagesSentKey = PersistentUserState.userIdentifier!
     private let userDefaults = UserDefaults.standard
     
@@ -179,7 +179,14 @@ class PaywallManager: ObservableObject {
     }
 
     init() {
-        checkForPaywall()  // Check on init so that it has the right value from the beginning
+         // Check on init so that it has the right value from the beginning
+        switch Constants.environment {
+        case .dev:
+            max = 300
+        case .prod:
+            max = 4
+        }
+        checkForPaywall()
     }
     
     func incrementMax() {

@@ -65,9 +65,12 @@ class WebSocketViewModel: ObservableObject {
             return
         }
         
-
         webSocketTask = urlSession.webSocketTask(with: url)
         webSocketTask?.resume()
+        
+        // Reset reconnection attempts and delay upon initiating a connection
+        currentReconnectionAttempts = 0
+        reconnectionDelay = 1.0 // Reset the reconnection delay to the initial value
         
         if let message = unsentMessage {
             send(message: message)
@@ -75,6 +78,10 @@ class WebSocketViewModel: ObservableObject {
         }
 
         receiveMessage()
+        
+        // Consider adding a successful connection handler here to reset the reconnection attempts
+        // This would likely be in the form of a delegate callback or a closure that gets called
+        // when the WebSocketTask successfully opens the connection.
     }
     
     func disconnect() {
@@ -82,37 +89,37 @@ class WebSocketViewModel: ObservableObject {
     }
 
     private func attemptReconnection() {
-        if currentReconnectionAttempts < maxReconnectionAttempts {
-            DispatchQueue.global().asyncAfter(deadline: .now() + reconnectionDelay) { [weak self] in
-                self?.connect()
-            }
-
+        if currentReconnectionAttempts >= maxReconnectionAttempts {
+            print("Max reconnection attempts reached. Will keep trying every \(maxReconnectionDelay) seconds. Please check your network and try again.")
+            reconnectionDelay = maxReconnectionDelay
+        } else {
             reconnectionDelay = min(reconnectionDelay * 2, maxReconnectionDelay)
             currentReconnectionAttempts += 1
-        } else {
-            print("Max reconnection attempts reached. Please check your network and try again.")
+        }
+
+        DispatchQueue.global().asyncAfter(deadline: .now() + reconnectionDelay) { [weak self] in
+            self?.connect()
         }
     }
     
     func send(message: String) {
-        webSocketTask?.send(.string(message)) { [weak self] error in
-                if let error = error {
-                    print("Error sending message: \(error)")
-                    
-                    if ((error as NSError).domain == "NSPOSIXErrorDomain" && (error as NSError).code == 57) || (error as NSError).code == 54 || (error as NSError).code == -1004 || (error as NSError).code == 1004 {
-                        print("Socket not connected. Attempting to reconnect...")
-                        
-                        // Store the message for retry only in case of an error
-                        self?.unsentMessage = message
-
-                        self?.attemptReconnection()
-                    }
-                    else {
-                        print("this error is not an attempt-reconnection triggering error - may need to make it one")
-                    }
-                }
-            }
-    }
+          webSocketTask?.send(.string(message)) { [weak self] error in
+              if let error = error {
+                  print("Error sending message: \(error)")
+                  
+                  // List of error codes that should trigger a reconnection attempt
+                  let reconnectionErrorCodes = [57, 54, -1004, 1004]
+                  
+                  if reconnectionErrorCodes.contains((error as NSError).code) || (error as NSError).domain == "NSPOSIXErrorDomain" {
+                      print("Socket not connected. Attempting to reconnect...")
+                      self?.unsentMessage = message
+                      self?.attemptReconnection()
+                  } else {
+                      print("this error is not an attempt-reconnection triggering error - may need to make it one")
+                  }
+              }
+          }
+      }
     
     private func receiveMessage() {
         webSocketTask?.receive { [weak self] result in
@@ -150,11 +157,6 @@ class WebSocketViewModel: ObservableObject {
             }
         }
     }
-
-
-
-
-
 
 
     private func handleError(_ error: Error) {

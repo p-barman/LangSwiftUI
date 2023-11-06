@@ -37,8 +37,12 @@ class ViewModel: ObservableObject {
         "ftx trial update",
         "best ETH lending rate on arbitrum",
         "ai-related cryptos with promise?"
-    ]{
+    ]{   willSet {
+        print("hit ", newValue)
+        
+    }
         didSet {
+           
             if oldValue != suggested_user_inputs {
                 print("Value changed from \(oldValue) to \(suggested_user_inputs)")
             }
@@ -52,6 +56,12 @@ class ViewModel: ObservableObject {
     init() {
 //        self.api = api
         self.webSocketVM.connect()
+        
+        Task {
+                await self.fetchSuggestedQuestions(lastUserMessage: "", firstRun: true)
+            }
+//        await self.fetchSuggestedQuestions(lastUserMessage: "", firstRun: true)
+        
         
     }
     
@@ -77,12 +87,12 @@ class ViewModel: ObservableObject {
         var suggested_user_inputs: [String]
     }
     
-    func fetchSuggestedQuestions(lastUserMessage: String) async {
+    func fetchSuggestedQuestions(lastUserMessage: String, firstRun: Bool =  false) async {
         let url = URL(string: Constants.httpUrlForSuggestedInputs)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let bodyData = ["text": lastUserMessage]
+        let bodyData = ["text": lastUserMessage, "firstRun": firstRun] as [String : Any]
         request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData, options: [])
         
         do {
@@ -91,7 +101,18 @@ class ViewModel: ObservableObject {
             let fetchedQuestionsResponse = try JSONDecoder().decode(SuggestedInputsResponse.self, from: data)
             DispatchQueue.main.async {
                 print("fetched q's - ", fetchedQuestionsResponse.suggested_user_inputs)
-                self.suggested_user_inputs = fetchedQuestionsResponse.suggested_user_inputs
+                
+                if firstRun {
+                    if fetchedQuestionsResponse.suggested_user_inputs.count >= 3 {
+                                            self.suggested_user_inputs[0] = fetchedQuestionsResponse.suggested_user_inputs[0]
+                                            self.suggested_user_inputs[2] = fetchedQuestionsResponse.suggested_user_inputs[1]
+                                            self.suggested_user_inputs[4] = fetchedQuestionsResponse.suggested_user_inputs[2]
+                                        }
+                }
+                else {
+                    
+                    self.suggested_user_inputs = fetchedQuestionsResponse.suggested_user_inputs
+                }
             }
         } catch {
             print("Error fetching questions:", error)
@@ -118,12 +139,22 @@ class ViewModel: ObservableObject {
     private func send(text: String) async {
         isInteractingWithModel = true
         
-        // Construct the message object
+        // Trim whitespaces and newline characters from both the text and suggested inputs
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Check if the text is a suggested input or off by 1 character
+        let isSuggestedInput = suggested_user_inputs.contains {
+            let trimmedSuggestion = $0.trimmingCharacters(in: .whitespacesAndNewlines)
+            return isCloseMatch(input: trimmedText, suggestion: trimmedSuggestion)
+        }
+
+        // Construct the message object with the is_suggested_input property
         let webSocketMessage = WebSocketMessageOut(
             text: text,
             user_secret: "secret-boopalo",
             user_identifier: PersistentUserState.userIdentifier ?? "default_userid",
-            msg_id: UUID().uuidString
+            msg_id: UUID().uuidString,
+            is_suggested_input: isSuggestedInput // Add this property to your WebSocketMessageOut model
         )
         
         // Convert the message object to JSON and send
@@ -252,6 +283,8 @@ class ViewModel: ObservableObject {
     }
 }
 
+
+
 extension ViewModel {
     var messagesAsString: String {
         return messages.map { "\($0.sendText) - \($0.responseText)" }.joined(separator: "\n")
@@ -265,6 +298,7 @@ extension ViewModel {
         var user_identifier: String
         var msg_id: String
         var app_version: String = Constants.app_version
+        var is_suggested_input: Bool = false
         // other properties if needed...
     }
 
