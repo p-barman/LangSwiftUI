@@ -171,6 +171,7 @@ struct MessageImage: View {
 struct URLTextView: View {
     let text: String
     let bgColor: Color
+    @StateObject private var clipboardManager = ClipboardManager()
 
     private func processText() -> [(String, Bool)] {
         var processedText = text
@@ -228,32 +229,68 @@ struct URLTextView: View {
 
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            ForEach(processText(), id: \.0) { segment in
-                if segment.1 {
-                    // This is a URL
-                    Link(destination: URL(string: segment.0)!) {
-                        Text(segment.0)
-                            .font(.system(size: 16))
-                            .foregroundColor(.blue)
-                            .underline()
+            Group {
+                VStack(alignment: .leading, spacing: 5) {
+                    ForEach(processText(), id: \.0) { segment in
+                        if segment.1 {
+                            // This is a URL
+                            Link(destination: URL(string: segment.0)!) {
+                                Text(segment.0)
+                                    .font(.system(size: 16))
+                                    .foregroundColor(.blue)
+                                    .underline()
+                            }
+                        } else {
+                            // This is regular text
+                            Text(segment.0)
+                                .font(.system(size: 16))
+                                .foregroundColor(bgColor == Color.blue ? .white : .primary)
+                        }
                     }
-                } else {
-                    // This is regular text
-                    Text(segment.0)
-                        .font(.system(size: 16))
-                        .foregroundColor(bgColor == Color.blue ? .white : .primary)
+                }
+                .padding(10)
+                .background(bgColor)
+                .cornerRadius(16)
+            }
+            .onLongPressGesture(minimumDuration: 0.5) {
+                clipboardManager.copyToClipboard(text: text)
+            }
+            .overlay(alignment: .center) {
+                if clipboardManager.showingCopyConfirmation {
+                    ConfirmationView()
+                        .transition(.scale.combined(with: .opacity))
+                        .zIndex(1) // Ensure it's above other views
                 }
             }
         }
-        .padding(10)
-        .background(bgColor)
-        .cornerRadius(16)
+    }
+
+
+import SwiftUI
+import UIKit
+
+class ClipboardManager: ObservableObject {
+    @Published var showingCopyConfirmation = false
+    
+    func copyToClipboard(text: String) {
+        UIPasteboard.general.string = text
+        showingCopyConfirmation = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // Adjust time as needed
+            self.showingCopyConfirmation = false
+        }
     }
 }
 
-
-
+struct ConfirmationView: View {
+    var body: some View {
+        Text("Copied to clipboard")
+            .font(.system(size: 14))
+            .foregroundColor(.white)
+            .padding(8)
+            .background(Color.black.opacity(0.75))
+            .cornerRadius(8)
+    }
+}
 
 
 
