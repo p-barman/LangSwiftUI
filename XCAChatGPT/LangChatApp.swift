@@ -35,7 +35,9 @@ struct ChatApp: App {
     var body: some Scene {
         WindowGroup {
             if paywallManager.shouldShowPaywall && !userStateModel.isSubscriptionActive { // not active?!
-                Paywall(isPaywallPresented: $isPaywallPresented).environmentObject(paywallManager)
+                Paywall(isPaywallPresented: $isPaywallPresented)
+                    .environmentObject(paywallManager)
+                    .environmentObject(userStateModel)
             } else {
 //                // ContentView or whatever you want to show when the paywall is dismissed
 //                ContentView()

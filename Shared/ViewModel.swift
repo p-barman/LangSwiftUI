@@ -9,6 +9,7 @@ import SwiftUI
 import AVKit
 
 class ViewModel: ObservableObject {
+    static let shared = ViewModel()
     var resetTimer: Timer?
     @Published var isInteractingWithModel = false {
         didSet {
@@ -44,7 +45,7 @@ class ViewModel: ObservableObject {
         didSet {
            
             if oldValue != suggested_user_inputs {
-                print("Value changed from \(oldValue) to \(suggested_user_inputs)")
+//                print("Value changed from \(oldValue) to \(suggested_user_inputs)")
             }
         }
     }
@@ -53,7 +54,7 @@ class ViewModel: ObservableObject {
     func clearChat() {
         messages.removeAll()
     }
-    init() {
+    private init() {
 //        self.api = api
         self.webSocketVM.connect()
         

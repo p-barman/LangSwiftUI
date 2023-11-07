@@ -46,6 +46,9 @@ struct Constants {
         case dev
         case prod
     }
+    
+    static let maxMessages = 80
+    static let maxMessagesResetHours = 8
 
     // Base URLs
     static var baseWebSocketURL: String {

@@ -26,6 +26,8 @@ struct Paywall: View {
     @State private var tokenTextClickCount: Int = 0
     @State private var showBetaSubscription: Bool = false
     
+    @State private var numProductsToShow: Int = 3
+    
     @EnvironmentObject var paywallManager: PaywallManager
 
     @Binding var isPaywallPresented: Bool
@@ -62,6 +64,7 @@ struct Paywall: View {
                     self.tokenTextClickCount += 1
                             if self.tokenTextClickCount >= 20 {
                                 self.showBetaSubscription = true
+                                self.numProductsToShow = 4
                             }
                 }
                 .onLongPressGesture(minimumDuration: 6, pressing: { pressing in
@@ -115,7 +118,7 @@ struct Paywall: View {
             
             VStack  {
                 if let availableProducts = iterableProducts {
-                        let productsToShow: [SKProduct] = showBetaSubscription ? availableProducts : Array(availableProducts.dropLast())
+                        let productsToShow: [SKProduct] = availableProducts
                         ForEach(productsToShow, id: \.productIdentifier) { product in
                             ZStack {
                                 RoundedRectangle(cornerRadius: 20)
@@ -138,7 +141,8 @@ struct Paywall: View {
                                 self.selectedProduct = product
                                 self.selectedRestore = false
                                 
-                                let aProduct: AdaptyProduct = self.getProductWith(productId: product.productIdentifier, totalNumProducts: 4)!
+                                let productId : String = product.productIdentifier
+                                let aProduct: AdaptyProduct = self.getProductWith(productId: productId, totalNumProducts: self.numProductsToShow)!
                                 
                                 DispatchQueue.global(qos: .userInitiated).async {
                                     Adapty.makePurchase(product: aProduct as! AdaptyPaywallProduct) { result in
@@ -146,7 +150,8 @@ struct Paywall: View {
                                         case let .success(info):
                                                if info.profile.accessLevels["premium"]?.isActive ?? false {
                                                    print("Successful purchase of —— ", aProduct, "what's profile? ", info.profile)
-                                                userStateModel.isSubscriptionActive = true
+                                                   userStateModel.isSubscriptionActive = true
+                                                   paywallManager.shouldShowPaywall = false
                                             }
                                             self.waitingForApplePurchase = false
                                             

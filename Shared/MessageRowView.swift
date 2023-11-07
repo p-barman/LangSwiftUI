@@ -171,6 +171,8 @@ struct MessageImage: View {
 struct URLTextView: View {
     let text: String
     let bgColor: Color
+    @Environment(\.colorScheme) var colorScheme
+
     @StateObject private var clipboardManager = ClipboardManager()
 
     private func processText() -> [(String, Bool)] {
@@ -212,7 +214,12 @@ struct URLTextView: View {
             if !preRangeText.isEmpty {
                 segments.append((preRangeText, false))
             }
-            let url = String(processedText[range])
+            
+            var url = String(processedText[range])
+            
+            // Trim trailing punctuation such as periods, commas, or other characters that are not part of the URL
+            url = url.trimmingCharacters(in: CharacterSet.punctuationCharacters)
+            
             segments.append((url, true))
             lastIndex = range.upperBound
         }
@@ -224,7 +231,7 @@ struct URLTextView: View {
         }
 
         return segments
-    }
+    } 
 
 
 
@@ -237,7 +244,7 @@ struct URLTextView: View {
                             Link(destination: URL(string: segment.0)!) {
                                 Text(segment.0)
                                     .font(.system(size: 16))
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(colorScheme == .dark ? .white : .blue )
                                     .underline()
                             }
                         } else {

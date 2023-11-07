@@ -13,8 +13,17 @@ struct ContentView: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.requestReview) var requestReview
-    @ObservedObject var vm = ViewModel() // ARE WE USING THIS??????
+    @ObservedObject var vm = ViewModel.shared // Use the shared instance
+
     @ObservedObject var paywallManager: PaywallManager
+    
+//    @State var numDailyMessagesAboveMax = False
+//    @StateObject private var messageTracker = MessageTracker()
+
+
+    @StateObject private var messageTracker = MessageTracker()
+    @State private var nextMessageDateText: String = ""
+    
 
     @State private var showSettingsView: Bool = false
 
@@ -24,6 +33,25 @@ struct ContentView: View {
     var body: some View {
         
         NavigationView {
+            if messageTracker.numDailyMessagesAboveMax, let nextResetDate = messageTracker.nextResetDate {
+                VStack(alignment: .center) {
+                                          Text("Temporary message limit exceeded.")
+                                              .multilineTextAlignment(.center) // Center the text within the VStack
+                                          Text("You can send messages again after \(nextResetDate, formatter: Self.resetDateFormatter) by tapping on this text area")
+                                              .multilineTextAlignment(.center) // Center the text within the VStack
+                                          Text("\n\nFor immediate access or concerns please email:")
+                                              .multilineTextAlignment(.center) // Center the text within the VStack
+                                          Text("team@langwallet.ai")
+                                              .multilineTextAlignment(.center) // Center the text within the VStack
+                                      }
+                                      .frame(maxWidth: .infinity)
+                            .onTapGesture {
+                                messageTracker.objectWillChange.send() // Inform SwiftUI that an update will happen
+                                messageTracker.updateResetTime() // Attempt to update the reset time
+                                
+                            }
+                        }
+
             VStack {
                            if colorScheme == .light {
                                Divider()
@@ -31,7 +59,11 @@ struct ContentView: View {
                                    .frame(height: 1)
                            }
                            chatListView
-                       }
+            }.onAppear(
+                perform: {
+                    messageTracker.resetCountIfNeeded()
+                }
+                )
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
@@ -124,7 +156,13 @@ struct ContentView: View {
         }
         .background(colorScheme == .light ? .white : Color(red: 52/255, green: 53/255, blue: 65/255, opacity: 0.5))
     }
-
+    
+    private static var resetDateFormatter: DateFormatter {
+           let formatter = DateFormatter()
+           formatter.dateStyle = .none
+           formatter.timeStyle = .short
+           return formatter
+       }
     
 
      
@@ -177,6 +215,7 @@ struct ContentView: View {
                         //send the message
                         await vm.sendTapped()
                         paywallManager.messagesSent += 1
+                        messageTracker.messageSent()
                     }
                 } label: {
                     Image(systemName: "paperplane.circle.fill")
@@ -234,6 +273,64 @@ struct TypingText: View {
             }
     }
 }
+
+
+class MessageTracker: ObservableObject {
+    @Published var numDailyMessagesAboveMax: Bool = false
+
+    private let messageCountKey = "dailyMessageCount"
+    private let resetDateKey = "resetDate"
+
+    private var userDefaults: UserDefaults { UserDefaults.standard }
+    
+    var nextResetDate: Date? {
+           guard let resetDate = userDefaults.object(forKey: resetDateKey) as? Date else {
+               return nil
+           }
+           return resetDate.addingTimeInterval(Double(Constants.maxMessagesResetHours) * 60.0 * 60.0)
+       }
+    // Call this method whenever a message is sent
+    func messageSent() {
+        let currentCount = userDefaults.integer(forKey: messageCountKey)
+        let updatedCount = currentCount + 1
+        
+        userDefaults.set(updatedCount, forKey: messageCountKey)
+        
+        if updatedCount > Constants.maxMessages {
+            numDailyMessagesAboveMax = true
+        }
+        
+        // Check if we need to reset the count for a new period as defined in Constants
+        resetCountIfNeeded()
+    }
+    
+    // Reset message count if 24 hours have passed
+    func resetCountIfNeeded() {
+        guard let resetDate = userDefaults.object(forKey: resetDateKey) as? Date else {
+            // If we don't have a reset date, set it now
+            userDefaults.set(Date(), forKey: resetDateKey)
+            return
+        }
+        
+        // Check if the specified hours have passed since the reset date
+        if Date().timeIntervalSince(resetDate) > Double(Constants.maxMessagesResetHours) * 60.0 * 60.0 {
+            userDefaults.set(0, forKey: messageCountKey) // Reset count
+            userDefaults.set(Date(), forKey: resetDateKey) // Update reset date
+            numDailyMessagesAboveMax = false // Reset daily messages check
+        }
+    }
+    func updateResetTime() {
+            resetCountIfNeeded() // This will check and update the reset time if necessary
+        }
+    
+    init() {
+         // Check if the daily message limit is exceeded when the tracker is initialized
+         let currentCount = userDefaults.integer(forKey: messageCountKey)
+         numDailyMessagesAboveMax = currentCount > Constants.maxMessages
+         resetCountIfNeeded()
+     }
+}
+
 
 
 //struct ContentView_previews: PreviewProvider {
