@@ -12,27 +12,7 @@ import StoreKit
 import RevenueCat
 
 
-class UserStateModel: ObservableObject {
-    
-    @Published var isSubscriptionActive = false
-    @Published var agreedToTerms: Bool = (UserDefaults.standard.bool(forKey: "agreedToTerms") ?? false)
-    @Published var isBackendLive: Bool = false
-    @Published var profileId: String = ""  // to reference in app wheter user has active subscription
-    
-    init() {
-        self.agreedToTerms = UserDefaults.standard.bool(forKey: "agreedToTerms")
-        
-        Adapty.getProfile { result in
-            if let profile = try? result.get() as? AdaptyProfile,
-               profile.accessLevels["premium"]?.isActive ?? false {
-                
-                print("this user is subscribed to: ", profile.subscriptions)
-                self.isSubscriptionActive = true
-            }
-        }
 
-    }
-}
 
 struct Paywall: View {
     @Environment(\.openURL) var openURL

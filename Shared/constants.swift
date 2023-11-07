@@ -39,7 +39,7 @@ struct PersistentUserState {
 
 
 struct Constants {
-    static let environment: Environment = .dev// change to .prod when needed
+    static let environment: Environment = .prod// change to .prod when needed
     static let app_version: String = "0.011"
     
     enum Environment {
@@ -74,6 +74,7 @@ struct Constants {
     static let suggestedUserInputsPath = "/suggested_user_inputs"
     static let filterContentPath = "/filter_content"
     static let reportContentPath = "/report_content"
+    static let userStatePath = "/get_user_state"
     
     // Corrected Full URLs
 
@@ -94,8 +95,13 @@ struct Constants {
         return "\(baseHttpURL)\(filterContentPath)"
     }
     
+   
     static var httpUrlReportConent: String {
         return "\(baseHttpURL)\(reportContentPath)"
+    }
+    
+    static var httpUrlForUserState: String {
+        return "\(baseHttpURL)\(userStatePath)"
     }
     
     // ... other constants and paths

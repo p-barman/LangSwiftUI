@@ -8,6 +8,9 @@
 import Foundation
 import SwiftUI
 
+
+
+
 struct SettingsView: View {
     
     @Binding var showSettings: Bool
@@ -19,6 +22,7 @@ struct SettingsView: View {
 //    @State private var userName: String = "your profile"
     @State private var userName: String = PersistentUserState.userName ?? ""
     @State private var animateHeart: Bool = false
+    @StateObject var userStateModel = UserStateModel()
 
     var body: some View {
         GeometryReader { geometry in
@@ -74,12 +78,13 @@ struct SettingsView: View {
                     )
             .onAppear() {
                 animateHeart = true
+                userStateModel.fetchUserState(userIdentifier: PersistentUserState.userIdentifier ?? "0x2845674dfuygh7g45F87") // MARK: GET USER INFO BY STREAM ID
             }
         }
     }
-
-
     
+
+
     var flagComment: some View {
         Section(header: Text("Report Content")) {
             ZStack(alignment: .topLeading) {
@@ -129,8 +134,13 @@ struct SettingsView: View {
         }
     }
     
+    
+// MARK: USER PROFILE TAB
+    @Environment(\.openURL) var openURL
+    @ObservedObject var clipboardManager = ClipboardManager()
+
     var userProfile: some View {
-        VStack {  // Wrap your HStack with a VStack
+        VStack {
             HStack {
                 Image(systemName: "person.crop.circle")
                     .resizable()
@@ -138,7 +148,6 @@ struct SettingsView: View {
                     .foregroundColor(.blue)
                     
                 VStack(alignment: .leading) {
-                    // Binding the TextField to the userName state
                     TextField("Enter your name", text: $userName, onCommit: {
                         commitUserName()
                     })
@@ -146,7 +155,43 @@ struct SettingsView: View {
                     .textFieldStyle(PlainTextFieldStyle())
                     .padding(.bottom, 8)
 
-                    Text(PersistentUserState.userIdentifier ?? "0x2845674dfuygh7g45F87").font(.system(size: 12))
+                    VStack(alignment: .leading, spacing: 4) {
+                        if let userAddress = userStateModel.userState?.userAddress {
+                            HStack {
+                                Text("Your address:").font(.system(size: 15))
+                                Spacer()
+                                Button(action: {
+                                    clipboardManager.copyToClipboard(text: userAddress)
+                                }) {
+                                    Image(systemName: "clipboard")
+                                        .imageScale(.small)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+
+                            Button(action: {
+                                if let url = URL(string: "https://etherscan.io/address/\(userAddress)") {
+                                    openURL(url)
+                                }
+                            }) {
+                                Text(userAddress)
+                                    .underline()
+                                    .foregroundColor(.blue)
+                                    .font(.system(size: 12))
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                        } else {
+                            Text("Address not available").font(.system(size: 12))
+                        }
+                    }
+                    .padding(.leading)
+
+                    // Optional: Confirmation view for clipboard copy
+                    if clipboardManager.showingCopyConfirmation {
+                        ConfirmationView()
+                            .transition(.scale)
+                    }
                 }
                 .padding(.leading)
             }
@@ -161,6 +206,9 @@ struct SettingsView: View {
         )
     }
 
+
+
+
     func commitUserName() {
         PersistentUserState.userName = userName
         hideKeyboard()
@@ -170,9 +218,49 @@ struct SettingsView: View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
+//    func fetchUserState(userIdentifier: String, completion: @escaping (Result<UserStateResponse, Error>) -> Void) {
+//        guard let url = URL(string: Constants.httpUrlForUserState) else {
+//            completion(.failure(NetworkError.invalidURL))
+//            return
+//        }
+//
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.addValue("Bearer \(yourToken)", forHTTPHeaderField: "Authorization") // Replace with your actual authorization token
+//
+//        // Construct the JSON body with the user identifier
+//        let body: [String: String] = ["user_identifier": userIdentifier]
+//        request.httpBody = try? JSONEncoder().encode(body)
+//        
+//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//            if let error = error {
+//                completion(.failure(error))
+//                return
+//            }
+//            
+//            guard let data = data else {
+//                completion(.failure(NetworkError.noData))
+//                return
+//            }
+//            
+//            do {
+//                let userState = try JSONDecoder().decode(UserStateResponse.self, from: data)
+//                completion(.success(userState))
+//            } catch {
+//                completion(.failure(error))
+//            }
+//        }
+//        task.resume()
+//    }
+//
+//    enum NetworkError: Error {
+//        case invalidURL
+//        case noData
+//    }
 
 
-        
+ // MARK: PLATFORMS (IMESSAGE AND SMS)
     
     var switchPlatforms: some View {
         Section(header: Text("Switch Platforms")) {
@@ -269,6 +357,9 @@ struct panelDetails: View {
 
 
 
+
+
+
 //struct SettingsView_Preview: PreviewProvider {
 //    @State static private var showSettingsView = true
 //    
@@ -279,7 +370,23 @@ struct panelDetails: View {
 //    }
 //}
 
+//
+//struct leaveReview {
+//    
+//}
 
-struct leaveReview {
-    
-}
+
+
+// Show current chain from UserState
+//                    if let currentChain = userStateModel.userState?.currentChain {
+//                        Text("Chain ID: \(currentChain)").font(.system(size: 12))
+//                    } else {
+//                        Text("Chain ID: 42161").font(.system(size: 12))
+//                    }
+
+                   // Show icon based on userHasFundedAccount status
+//                    HStack {
+//                        Image(systemName: userStateModel.userState?.userHasFundedAccount ?? false ? "circle.fill" : "xmark.circle.fill")
+//                            .foregroundColor(userStateModel.userState?.userHasFundedAccount ?? false ? .green : .red)
+//                        Text("Funds available")
+//                    }
