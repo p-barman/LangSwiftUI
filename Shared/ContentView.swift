@@ -87,7 +87,7 @@ struct ContentView: View {
            
                 .fullScreenCover(isPresented: $showSettingsView) {
                     NavigationView {
-                        SettingsView(showSettings: $showSettingsView, viewModel: vm)
+                        SettingsView(showSettings: $showSettingsView, viewModel: vm).environmentObject(UserStateModel.shared)
                     }
                 }
         }

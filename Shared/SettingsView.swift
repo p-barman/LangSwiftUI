@@ -22,13 +22,18 @@ struct SettingsView: View {
 //    @State private var userName: String = "your profile"
     @State private var userName: String = PersistentUserState.userName ?? ""
     @State private var animateHeart: Bool = false
-    @StateObject var userStateModel = UserStateModel()
+//    @StateObject var userStateModel = UserStateModel()
+    @EnvironmentObject var userStateModel: UserStateModel
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 List {
                     userProfile
+                    //
+                                      if !userStateModel.isBackendLive {
+                                          currentBlockchainDetails
+                                      }
                     switchPlatforms
                     flagComment
                     
@@ -218,46 +223,7 @@ struct SettingsView: View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
-//    func fetchUserState(userIdentifier: String, completion: @escaping (Result<UserStateResponse, Error>) -> Void) {
-//        guard let url = URL(string: Constants.httpUrlForUserState) else {
-//            completion(.failure(NetworkError.invalidURL))
-//            return
-//        }
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.addValue("Bearer \(yourToken)", forHTTPHeaderField: "Authorization") // Replace with your actual authorization token
-//
-//        // Construct the JSON body with the user identifier
-//        let body: [String: String] = ["user_identifier": userIdentifier]
-//        request.httpBody = try? JSONEncoder().encode(body)
-//        
-//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let error = error {
-//                completion(.failure(error))
-//                return
-//            }
-//            
-//            guard let data = data else {
-//                completion(.failure(NetworkError.noData))
-//                return
-//            }
-//            
-//            do {
-//                let userState = try JSONDecoder().decode(UserStateResponse.self, from: data)
-//                completion(.success(userState))
-//            } catch {
-//                completion(.failure(error))
-//            }
-//        }
-//        task.resume()
-//    }
-//
-//    enum NetworkError: Error {
-//        case invalidURL
-//        case noData
-//    }
+ // MARK: TO DO - FUND WALLET BUTTON
 
 
  // MARK: PLATFORMS (IMESSAGE AND SMS)
@@ -292,6 +258,41 @@ struct SettingsView: View {
                 if let url = URL(string: strURL) {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
+            }
+
+        }
+    }
+    
+    // MARK: CHAIN ID, NETWORK AND WALLET FUNDED STATUS?
+    
+    var currentBlockchainDetails: some View {
+        Section(header: Text("Details")) {
+            HStack {
+                panelDetails(iconColor: .blue, iconName: "link")
+                Text("Chain ID")
+                Spacer()
+                Text(userStateModel.userState?.currentChain ?? "42161")
+                                .font(.system(size: 17))
+                                .foregroundColor(.gray)
+            }
+
+            HStack {
+                panelDetails(iconColor: .green, iconName: "cube")
+                Text("Network name")
+                Spacer()
+                Text(userStateModel.currentNetworkName)
+                                .font(.system(size: 17))
+                                .foregroundColor(.gray)
+
+            }
+            
+            HStack {
+                panelDetails(iconColor: .yellow, iconName: "dollarsign.square.fill")
+                Text("Funds available")
+                Spacer()
+                Image(systemName: userStateModel.userState?.userHasFundedAccount ?? false ? "checkmark.circle" : "multiply.circle")
+                                            .foregroundColor(userStateModel.userState?.userHasFundedAccount ?? false ? .green : .red)
+
             }
 
         }
@@ -354,6 +355,34 @@ struct panelDetails: View {
     }
     
 }
+
+enum NetworkName: String {
+    case ethereum = "1"
+    case arbitrum = "42161"
+    case polygon = "137"
+
+    var displayName: String {
+        switch self {
+        case .ethereum:
+            return "Ethereum Mainnet"
+        case .arbitrum:
+            return "Arbitrum"
+        case .polygon:
+            return "Polygon Mainnet"
+        }
+    }
+}
+
+extension UserStateModel {
+    var currentNetworkName: String {
+        guard let currentChainString = userState?.currentChain,
+              let network = NetworkName(rawValue: currentChainString) else {
+            return "Arbitrum Mainnet" // Or any default you prefer
+        }
+        return network.displayName
+    }
+}
+
 
 
 
