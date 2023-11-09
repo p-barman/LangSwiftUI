@@ -13,11 +13,11 @@ class UserStateModel: ObservableObject {
     
     @Published var isSubscriptionActive = false
     @Published var userState: UserStateResponse?
-
+   
     @Published var agreedToTerms: Bool = (UserDefaults.standard.bool(forKey: "agreedToTerms") ?? false)
     @Published var isBackendLive: Bool = false
     @Published var profileId: String = ""  // to reference in app wheter user has active subscription
-    
+    static let shared = UserStateModel()
     init() {
         self.agreedToTerms = UserDefaults.standard.bool(forKey: "agreedToTerms")
         
@@ -79,6 +79,52 @@ class UserStateModel: ObservableObject {
             }
         }.resume()
     }
+    
+    func checkIfBackendIsLive() {
+        guard let url = URL(string: Constants.httpUrlForBackendLive) else {
+            DispatchQueue.main.async {
+                print("Backend Live Check: URL is not valid.")
+                self.isBackendLive = false
+            }
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let data = data,
+                  error == nil,
+                  let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                DispatchQueue.main.async {
+                    print("Backend Live Check: Failed to receive a valid response or status code not 200.")
+                    self?.isBackendLive = false
+                }
+                return
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Bool],
+                   let isBackendLive = json["backend_is_live"] {
+                    DispatchQueue.main.async {
+                        self?.isBackendLive = isBackendLive
+                        print("Backend Live Check: Backend is live (\(isBackendLive)).")
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self?.isBackendLive = false
+                        print("Backend Live Check: Failed to parse JSON response.")
+                    }
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self?.isBackendLive = false
+                    print("Backend Live Check: JSON parsing error: \(error).")
+                }
+            }
+        }
+        
+        task.resume()
+    }
+
 
 }
 

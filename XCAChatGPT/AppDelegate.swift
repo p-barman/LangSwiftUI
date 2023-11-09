@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Activate Adapty with the provided public key and user identifier
         Adapty.activate("public_live_nJs3XlAe.ABYgz9pWslrvnZwnfdmI", customerUserId: PersistentUserState.userIdentifier ?? "default", storeKit2Usage: .forIntroEligibilityCheck)
         
+        // Check if backend is live and store the state
+        UserStateModel.shared.checkIfBackendIsLive()
+        
         // Set UNUserNotificationCenter delegate to self to handle incoming notifications
         UNUserNotificationCenter.current().delegate = self
         
@@ -33,6 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         return true
     }
+
     
     // Handle incoming notification while app is in the foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter,

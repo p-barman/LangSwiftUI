@@ -78,6 +78,7 @@ struct Constants {
     static let filterContentPath = "/filter_content"
     static let reportContentPath = "/report_content"
     static let userStatePath = "/get_user_state"
+    static let isBackendLivePath = "/backend_is_live"
     
     // Corrected Full URLs
 
@@ -105,6 +106,10 @@ struct Constants {
     
     static var httpUrlForUserState: String {
         return "\(baseHttpURL)\(userStatePath)"
+    }
+    
+    static var httpUrlForBackendLive: String {
+        return "\(baseHttpURL)\(isBackendLivePath)"
     }
     
     // ... other constants and paths
