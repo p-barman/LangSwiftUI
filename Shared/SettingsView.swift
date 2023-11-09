@@ -94,7 +94,7 @@ struct SettingsView: View {
         Section(header: Text("Report Content")) {
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $user_report_text)
-                    .frame(height: 100)
+                    .frame(height: 70)
                     .focused($isFocused)
                 if user_report_text.isEmpty {
                     Text("Reason for flagging content")

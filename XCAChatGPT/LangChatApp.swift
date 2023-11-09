@@ -22,7 +22,7 @@ struct ChatApp: App {
     @StateObject var paywallManager = PaywallManager()
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+    @State private var isAppReady = false  // New state to control the display of LoadView
     @State private var isPaywallPresented: Bool = true
     @State var showTerms : Bool = !UserDefaults.standard.bool(forKey: "agreedToTerms")
     
@@ -34,7 +34,10 @@ struct ChatApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if paywallManager.shouldShowPaywall && !userStateModel.isSubscriptionActive { // not active?!
+            if !isAppReady {
+                           // Show the LoadView on app start
+                           LoadView(isAppReady: $isAppReady)
+                       } else if paywallManager.shouldShowPaywall && !userStateModel.isSubscriptionActive { // not active?!
                 Paywall(isPaywallPresented: $isPaywallPresented)
                     .environmentObject(paywallManager)
                     .environmentObject(userStateModel)
@@ -92,3 +95,43 @@ struct UserProfile {
     private init() {}
     var profileId: String = ""
 }
+
+
+import SwiftUI
+import Lottie
+
+struct LoadView: View {
+    @State private var imageOpacity = 0.0
+    @Binding var isAppReady: Bool
+
+    var body: some View {
+        ZStack {
+
+            // Image that fades in
+            Image("langicon") // Replace "langicon" with your actual image name in your assets
+                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .scaleEffect(0.5) // Adjust the scale to fit your design
+                .opacity(imageOpacity)
+                .onAppear {
+                    withAnimation(.easeIn(duration: 5)) {
+                        self.imageOpacity = 1.0
+                    }
+                }
+
+            // Lottie animation view
+            LottieView(name: "alien", loopMode: .loop)
+//                .opacity(imageOpacity) // Bind the opacity of the Lottie view to the image's opacity
+                .onAppear {
+                    // Start the Lottie animation with a delay after the image has faded in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        withAnimation {
+                            self.imageOpacity = 0 // You might want to fade out the Lottie animation or just remove it after it's done
+                            isAppReady = true
+                        }
+                    }
+                }
+        }
+    }
+}
+
