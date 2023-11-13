@@ -26,7 +26,7 @@ struct Paywall: View {
     @State private var tokenTextClickCount: Int = 0
     @State private var showBetaSubscription: Bool = false
     
-    @State private var numProductsToShow: Int = 3
+    @State private var numProductsToShow: Int = 4
     
     @EnvironmentObject var paywallManager: PaywallManager
 
@@ -118,7 +118,7 @@ struct Paywall: View {
             
             VStack  {
                 if let availableProducts = iterableProducts {
-                        let productsToShow: [SKProduct] = availableProducts
+                    let productsToShow: [SKProduct] = showBetaSubscription ? availableProducts : availableProducts.dropLast()
                         ForEach(productsToShow, id: \.productIdentifier) { product in
                             ZStack {
                                 RoundedRectangle(cornerRadius: 20)

@@ -38,9 +38,17 @@ struct PersistentUserState {
 
 
 
+//import Foundation
+
+
 struct Constants {
-    static let environment: Environment = .dev// change to .prod when needed
-    static let app_version: String = "0.011"
+    
+    static let environment: Environment = .prod// Change to .prod when needed
+    //Backend vars
+    static var app_version: String = "0.011"
+    static var is_backend_live: Bool = false
+    static var max_num_messages: Int = 8
+    static var max_num_messages_dev: Int = 300
     
     enum Environment {
         case dev
@@ -70,7 +78,6 @@ struct Constants {
     }
     
     // Paths
-    // Corrected Paths
     static var userIdentifierPath: String {
         return "/\(PersistentUserState.userIdentifier ?? "expl_user_identifier345")"
     }
@@ -79,18 +86,13 @@ struct Constants {
     static let reportContentPath = "/report_content"
     static let userStatePath = "/get_user_state"
     static let isBackendLivePath = "/backend_is_live"
+    static let backendVariablesPath = "/get_backend_variables"
     
-    // Corrected Full URLs
-
     // Full URLs
     static var webSocketURL: String {
-           return "\(baseWebSocketURL)\(userIdentifierPath)"
-       }
+        return "\(baseWebSocketURL)\(userIdentifierPath)"
+    }
     
-//    static var httpUrl: String {
-//        return "\(baseHttpURL)\(explUserIdentifierPath)"
-//    }
-//
     static var httpUrlForSuggestedInputs: String {
         return "\(baseHttpURL)\(suggestedUserInputsPath)"
     }
@@ -99,8 +101,7 @@ struct Constants {
         return "\(baseHttpURL)\(filterContentPath)"
     }
     
-   
-    static var httpUrlReportConent: String {
+    static var httpUrlReportContent: String {
         return "\(baseHttpURL)\(reportContentPath)"
     }
     
@@ -111,9 +112,72 @@ struct Constants {
     static var httpUrlForBackendLive: String {
         return "\(baseHttpURL)\(isBackendLivePath)"
     }
-    
-    // ... other constants and paths
+    static var httpUrlForBackendVariables: String {
+        return "\(baseHttpURL)\(backendVariablesPath)"
+    }
+
+    // Function to fetch and update backend variables
+    // Function to fetch and update backend variables
+    // Function to fetch and update backend variables
+    static func fetchBackendVariables() {
+        guard let url = URL(string: Constants.httpUrlForBackendVariables) else {
+            print("Invalid URL for backend variables.")
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            // Check for any errors
+            if let error = error {
+                print("Error fetching backend variables: \(error.localizedDescription)")
+                return
+            }
+
+            // Make sure we got data
+            guard let data = data else {
+                print("Did not receive data")
+                return
+            }
+
+            // Parse the JSON
+            do {
+                if let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    // Extract each variable from the JSON object
+//                    if let isBackendLive = jsonObject["is_backend_live"] as? Bool {
+//                        Constants.is_backend_live = isBackendLive
+//                    } else {
+//                        print("Could not parse 'is_backend_live' from JSON")
+//                    }
+
+                    if let maxNumMessages = jsonObject["max_num_messages"] as? Int {
+                        Constants.max_num_messages = maxNumMessages
+                        print(Constants.max_num_messages)
+
+                    } else {
+                        print("Could not parse 'max_num_messages' from JSON")
+                    }
+
+                    if let appVersion = jsonObject["app_version"] as? String {
+                        Constants.app_version = appVersion
+                        print("Constants.app_version ", Constants.app_version)
+                    } else {
+                        print("Could not parse 'app_version' from JSON")
+                    }
+                } else {
+                    print("Could not parse JSON into a dictionary")
+                }
+            } catch {
+                print("JSON parsing error: \(error.localizedDescription)")
+            }
+        }
+        // Start the task
+        task.resume()
+    }
+
 }
+
+
+// The rest of your Swift code would remain the same.
+
 
 
 
@@ -196,21 +260,24 @@ class PaywallManager: ObservableObject {
          // Check on init so that it has the right value from the beginning
         switch Constants.environment {
         case .dev:
-            max = 300
+            max = Constants.max_num_messages // change to max_num_messages_dev
         case .prod:
-            max = 4
+            max = Constants.max_num_messages
         }
         checkForPaywall()
     }
     
     func incrementMax() {
             print("increamenting max messages from ", max, "to ", (max + 10))
-            max += 10
+            Constants.max_num_messages += 10
+            Constants.max_num_messages_dev += 10
             checkForPaywall()
         }
 
     private func checkForPaywall() {
-        if messagesSent > max {
+        print(messagesSent)
+        print(Constants.max_num_messages)
+        if messagesSent > Constants.max_num_messages {
             print("showing paywall ", "messages sent: ", messagesSent, "current max: ", max)
             shouldShowPaywall = true
         }

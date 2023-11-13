@@ -31,7 +31,7 @@ struct SettingsView: View {
                 List {
                     userProfile
                     //
-                                      if !userStateModel.isBackendLive {
+                    if !Constants.is_backend_live {
                                           currentBlockchainDetails
                                       }
                     switchPlatforms
@@ -304,7 +304,7 @@ struct SettingsView: View {
         let text: String
     }
     func sendReport(user_report_text: String, convo: String) {
-        let url = URL(string: Constants.httpUrlReportConent)!
+        let url = URL(string: Constants.httpUrlReportContent)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

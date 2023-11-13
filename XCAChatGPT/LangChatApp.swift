@@ -114,7 +114,7 @@ struct LoadView: View {
 //                .scaleEffect(0.5) // Adjust the scale to fit your design
                 .opacity(imageOpacity)
                 .onAppear {
-                    withAnimation(.easeIn(duration: 5)) {
+                    withAnimation(.easeIn(duration: 3)) {
                         self.imageOpacity = 1.0
                     }
                 }
@@ -124,7 +124,7 @@ struct LoadView: View {
 //                .opacity(imageOpacity) // Bind the opacity of the Lottie view to the image's opacity
                 .onAppear {
                     // Start the Lottie animation with a delay after the image has faded in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                         withAnimation {
                             self.imageOpacity = 0 // You might want to fade out the Lottie animation or just remove it after it's done
                             isAppReady = true

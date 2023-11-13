@@ -106,6 +106,7 @@ class UserStateModel: ObservableObject {
                    let isBackendLive = json["backend_is_live"] {
                     DispatchQueue.main.async {
                         self?.isBackendLive = isBackendLive
+                        Constants.is_backend_live = isBackendLive
                         print("Backend Live Check: Backend is live (\(isBackendLive)).")
                     }
                 } else {

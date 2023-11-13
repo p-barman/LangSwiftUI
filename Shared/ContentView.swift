@@ -203,7 +203,7 @@ struct ContentView: View {
                         .cornerRadius(5)
                         
                 }
-                TextField("Send Message", text: $vm.inputMessage, axis: .vertical)
+                TextField("Message", text: $vm.inputMessage, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
                     .focused($isTextFieldFocused)
                     .disabled(vm.isInteractingWithModel)

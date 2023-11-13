@@ -179,15 +179,11 @@ class ViewModel: ObservableObject {
             responseText: ""
         )
         self.messages.append(userMessageRow)
-        
-
+    
         
         // Capture the current message index for later use (Lang's index)
-       
-        
         // Define the response handling mechanism
         // ONLY FOR TEXT !?
-        
         
         webSocketVM.onImageReceived = { [weak self] (message: WebsocketMessageData) in
             DispatchQueue.main.async {

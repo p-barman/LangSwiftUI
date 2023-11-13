@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Check if backend is live and store the state
         UserStateModel.shared.checkIfBackendIsLive()
         
+        Constants.fetchBackendVariables()
         // Set UNUserNotificationCenter delegate to self to handle incoming notifications
         UNUserNotificationCenter.current().delegate = self
         
